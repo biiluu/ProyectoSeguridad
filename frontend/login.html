@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - MercaUca</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+  <!-- Topbar mínimo -->
+  <header id="topbar">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand">
+        <span>🛍️</span> MERCAUCA
+      </a>
+      <a href="index.html"
+        style="font-family: var(--fuentePrincipal); letter-spacing: 0.06em; color: var(--secundario); font-size: 1.05rem; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(197, 164, 109, 0.35); background: rgba(255, 255, 255, 0.04);">
+        <span>←</span> VOLVER AL INICIO
+      </a>
+    </div>
+  </header>
+
+  <main class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <div class="login-badge">🔐 Acceso Seguro</div>
+        <h1 class="login-title">Iniciar Sesión</h1>
+        <p class="login-subtitle">Ingresa tus credenciales para acceder a tu cuenta</p>
+      </div>
+
+      <form id="login-form" class="login-form">
+        <div class="input-group">
+          <label class="input-label" for="login-usuario">Usuario o ID</label>
+          <input type="text" id="login-usuario" class="input-control" placeholder="Ej. jperez26" required
+            autocomplete="username">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="login-password">
+            <span>Contraseña</span>
+          </label>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" class="input-control" placeholder="••••••••" required
+              autocomplete="current-password" minlength="6">
+            <button type="button" id="btn-toggle-pwd" class="password-toggle-btn" title="Mostrar u ocultar contraseña"
+              aria-label="Mostrar u ocultar contraseña">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn-53">
+          Entrar a MercaUca ➔
+        </button>
+
+        <div id="login-feedback" class="auth-feedback" style="display: none;"></div>
+      </form>
+
+      <div class="register-section">
+        <p>¿Aún no tienes una cuenta?</p>
+        <button type="button" class="btn-register" onclick="window.location.href='registro.html'">
+          Crear una cuenta nueva
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sesionLogin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const feedback = document.getElementById('login-feedback');
+      const submitBtn = document.getElementById('login-submit-btn');
+
+      // Leer parámetros de URL (redirecciones y motivos de seguridad)
+      const urlParams = new URLSearchParams(window.location.search);
+      const motivo = urlParams.get('motivo');
+      const redirectTarget = urlParams.get('redirect');
+
+      if (motivo === 'no_autenticado') {
+        feedback.className = 'auth-feedback auth-feedback--error';
+        feedback.textContent = '🔒 Debes iniciar sesión con tu cuenta para acceder a esa sección.';
+        feedback.style.display = 'block';
+      } else if (motivo === 'denegado_admin') {
+        feedback.className = 'auth-feedback auth-feedback--error';
+        feedback.textContent = '⛔ Acceso denegado: No tienes permisos para acceder a esta sección.';
+        feedback.style.display = 'block';
+      } else if (motivo === 'logout') {
+        feedback.className = 'auth-feedback auth-feedback--success';
+        feedback.textContent = '✔ Tu sesión ha sido cerrada correctamente.';
+        feedback.style.display = 'block';
+      } else if (motivo === 'token_expirado') {
+        feedback.className = 'auth-feedback auth-feedback--error';
+        feedback.textContent = 'Tu sesión anterior expiró. Por favor ingresa tus credenciales nuevamente.';
+        feedback.style.display = 'block';
+      }
+
+      // Toggle contraseña
+      const pwdInput = document.getElementById('login-password');
+      const btnTogglePwd = document.getElementById('btn-toggle-pwd');
+      btnTogglePwd.addEventListener('click', () => {
+        if (pwdInput.type === 'password') {
+          pwdInput.type = 'text';
+          btnTogglePwd.textContent = '🙈';
+        } else {
+          pwdInput.type = 'password';
+          btnTogglePwd.textContent = '👁️';
+        }
+      });
+
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        feedback.style.display = 'none';
+
+        const idUsuario = document.getElementById('login-usuario').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!idUsuario || !password) {
+          feedback.className = 'auth-feedback auth-feedback--error';
+          feedback.textContent = 'Por favor ingresa tanto tu usuario como tu contraseña.';
+          feedback.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verificando…';
+
+        try {
+          const res = await fetch(`${window.API_URL}/api/usuarios/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ idUsuario, password })
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (res.ok) {
+            window.sesionLogin.setSession(data);
+            feedback.className = 'auth-feedback auth-feedback--success';
+            feedback.textContent = '✔ Credenciales correctas. Redirigiendo…';
+            feedback.style.display = 'block';
+
+            setTimeout(() => {
+              if (['index.html', 'admin.html', 'vender.html'].includes(redirectTarget)) {
+                window.location.href = redirectTarget;
+              } else if (data.user && String(data.user.nombreRol || '').trim().toLowerCase() === 'administrador') {
+                window.location.href = 'admin.html';
+              } else {
+                window.location.href = 'index.html';
+              }
+            }, 600);
+          } else {
+            feedback.className = 'auth-feedback auth-feedback--error';
+            feedback.textContent = data.message || 'Usuario o contraseña incorrectos.';
+            feedback.style.display = 'block';
+          }
+        } catch (err) {
+          console.error(err);
+          feedback.className = 'auth-feedback auth-feedback--error';
+          feedback.textContent = 'Error de conexión con el servidor.';
+          feedback.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Entrar a MercaUca ➔';
+        }
+      };
+    });
+  </script>
+</body>
+
+</html>
