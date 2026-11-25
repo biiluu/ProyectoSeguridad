@@ -12,6 +12,9 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 app.use('/api/verificacion', require('./routes/verificacionRoutes'));
 app.use('/api/usuarios', require('./routes/registroRoutes'));
+app.use(['/api/productos', '/api/Productos'], require('./routes/productosRoutes'));
+app.use(['/api/novedades', '/api/Novedades'], require('./routes/novedadesRoutes'));
+app.use(['/api/search', '/api/Search'], require('./routes/searchRoutes'));
 app.use(express.static(require('node:path').join(__dirname, '../frontend')));
 
 app.get('/api/health', (req, res) => {
