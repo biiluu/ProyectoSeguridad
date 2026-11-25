@@ -426,10 +426,11 @@
           }
 
           // 2. Registrar en la base de datos MySQL
+          const { comprobante } = await verifyRes.json();
           const regRes = await fetch(`${window.API_URL}/api/usuarios/registro`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formDataPendiente)
+            body: JSON.stringify({ ...formDataPendiente, comprobante })
           });
 
           const regData = await regRes.json().catch(() => ({}));
