@@ -1,0 +1,403 @@
+/* =====================================================================
+   MercaUca - Estilos Base, Sistema de Grilla y Variables Globales
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Paleta Oficial MercaUca */
+  --primario: #F6F5F2;            /* Fondo marfil cálido limpio */
+  --primarioOscuro: #18181B;      /* Carbón MercaUca */
+  --secundario: #C5A46D;          /* Dorado MercaUca */
+  --secundarioHover: #B08D55;
+  --secundarioOscuro: #111827;
+  --blanco: #FFFFFF;
+  --negro: #000000;
+  --rojo: #980404;                /* Rojo Carmesí MercaUca */
+  --rojoVivo: #DC2626;
+
+  /* Variables semánticas */
+  --color-primary: #C5A46D;
+  --color-primary-dark: #980404;
+  --color-primary-light: #DFBE86;
+  --color-accent-red: #980404;
+  --color-accent-red-hover: #7A0303;
+  --color-bg-light: #F6F5F2;
+  --color-surface: #FFFFFF;
+  --color-text-main: #18181B;
+  --color-text-muted: #64748B;
+  --color-border: #E2E8F0;
+
+  /* Tipografías */
+  --fuentePrincipal: 'Staatliches', sans-serif;
+  --font-family-base: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Contenedor estándar alineado en toda la app */
+  --container-max: 1280px;
+  --container-pad: 1.5rem;
+
+  /* Sombras limpias */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.12);
+  --shadow-xl: 0 24px 48px rgba(15, 23, 42, 0.18);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--primario);
+  background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F6F5F2 65%, #ECEAE4 100%);
+  background-attachment: fixed;
+  color: var(--color-text-main);
+  line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar personalizada estilo MercaUca */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #18181B;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--secundario);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #DFBE86;
+}
+
+/* Contenedor principal perfectamente alineado */
+main.contenedor, div.contenedor, section.contenedor {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-pad);
+  padding-right: var(--container-pad);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Encabezado de Sección Editorial y Ordenado */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2.25rem 0 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(197, 164, 109, 0.25);
+}
+
+.section-header > div {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 5px solid var(--secundario);
+}
+
+.section-title {
+  font-family: var(--fuentePrincipal);
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 400;
+  color: var(--primarioOscuro);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.section-subtitle {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.text-center { text-align: center; }
+.text-muted { color: var(--color-text-muted); }
+
+/* =====================================================================
+   Keyframes y Utilidades de Animación
+   ===================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseBadge {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.22); }
+  70% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Skeleton Loader alineado con las tarjetas */
+.skeleton-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+  overflow: hidden;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-img {
+  height: 215px;
+  background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-body {
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+/* =====================================================================
+   Toast flotante de notificación (Estilo MercaUca Oscuro/Dorado)
+   ===================================================================== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 290px;
+  max-width: 390px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--primarioOscuro);
+  color: #FFFFFF;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  animation: toastSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  border-left: 4px solid var(--secundario);
+}
+
+.toast--success { border-left-color: #10B981; }
+.toast--error { border-left-color: #EF4444; }
+.toast--info { border-left-color: var(--secundario); }
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =====================================================================
+   Modales Globales (Estilo MercaUca)
+   ===================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  animation: modalFadeIn 0.22s ease forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(197, 164, 109, 0.35);
+  text-align: center;
+  position: relative;
+  transform: scale(0.95) translateY(10px);
+  animation: modalCardScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalCardScaleIn {
+  from { transform: scale(0.95) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: #4B5563;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  background: var(--primarioOscuro);
+  color: var(--secundario);
+  border-color: var(--primarioOscuro);
+}
+
+.modal-title {
+  font-family: var(--fuentePrincipal);
+  font-size: 1.85rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+  color: var(--primarioOscuro);
+}
+
+.modal-text {
+  font-size: 0.94rem;
+  color: #4B5563;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 1.4rem;
+}
+
+.btn-modal-primary {
+  flex: 1;
+  background: var(--primarioOscuro);
+  color: var(--secundario);
+  border: 1.5px solid var(--secundario);
+  font-family: var(--fuentePrincipal);
+  letter-spacing: 0.06em;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-modal-primary:hover:not(:disabled) {
+  background: var(--secundario);
+  color: var(--primarioOscuro);
+  transform: translateY(-1px);
+}
+
+.btn-modal-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-modal-secondary {
+  flex: 1;
+  background: #F8FAFC;
+  color: var(--primarioOscuro);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-family: var(--fuentePrincipal);
+  letter-spacing: 0.05em;
+  font-size: 1.05rem;
+  border: 1.5px solid #CBD5E1;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-modal-secondary:hover {
+  background: #E2E8F0;
+}
