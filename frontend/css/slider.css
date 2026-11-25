@@ -1,0 +1,250 @@
+/* =====================================================================
+   MercaUca - Estilos Carrusel / Hero Slider (Alineación Limpia + Fusión Sin Corte)
+   ===================================================================== */
+#destacados {
+  margin: 2rem 0 2.75rem;
+  animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(197, 164, 109, 0.28);
+  background: #0A0A0B;
+}
+
+.track {
+  display: flex;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: 410px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Degradados continuos oscuros de lujo originales de MercaUca */
+.slide.bg-verde, .slide__left.bg-verde {
+  background: linear-gradient(115deg, #0D0D0F 0%, #171410 48%, #241C12 100%);
+  color: #FFFFFF;
+}
+
+.slide.bg-vino, .slide__left.bg-vino {
+  background: linear-gradient(115deg, #110B0B 0%, #241111 48%, #1C150F 100%);
+  color: #FFFFFF;
+}
+
+.slide.bg-azul, .slide__left.bg-azul {
+  background: linear-gradient(135deg, #1C1814 0%, #2D2319 50%, #120D0A 100%);
+  color: #FFFFFF;
+}
+
+/* Columna izquierda alineada a la izquierda con margen para la flecha */
+.slide__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding: 3.25rem 2.5rem 3.25rem 5.25rem;
+  z-index: 3;
+  position: relative;
+  background: transparent !important;
+}
+
+/* Resplandor dorado ambiental sutil */
+.slide__left::before {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 164, 109, 0.14) 0%, transparent 70%);
+  top: -60px;
+  left: -40px;
+  pointer-events: none;
+}
+
+.slide__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(197, 164, 109, 0.15);
+  color: var(--secundario);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 1rem;
+  border: 1px solid rgba(197, 164, 109, 0.35);
+}
+
+.slide__title {
+  font-family: var(--fuentePrincipal);
+  font-size: clamp(2.2rem, 3.6vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.08;
+  margin-bottom: 0.85rem;
+  color: #FFFFFF;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.slide__text {
+  font-size: 1.02rem;
+  color: #D4D4D8;
+  margin-bottom: 1.75rem;
+  max-width: 440px;
+  line-height: 1.55;
+}
+
+/* Botón CTA con acento Dorado MercaUca */
+.slide__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--secundario);
+  color: #141414;
+  font-family: var(--fuentePrincipal);
+  letter-spacing: 0.07em;
+  font-size: 1.05rem;
+  padding: 0.7rem 1.65rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 20px rgba(197, 164, 109, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.slide__cta:hover {
+  background: #FFFFFF;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.25);
+}
+
+/* Columna derecha con fusión gradual sin corte vertical */
+.slide__right {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.2) 14%, rgba(0, 0, 0, 0.75) 35%, #000000 58%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.2) 14%, rgba(0, 0, 0, 0.75) 35%, #000000 58%);
+}
+
+.slide__right::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.18) 0%, transparent 35%),
+              linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, transparent 35%);
+  pointer-events: none;
+}
+
+.slide__img {
+  width: 100%;
+  height: 100%;
+  max-height: 440px;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slider:hover .slide__img {
+  transform: scale(1.05);
+}
+
+/* Flechas de navegación */
+.slider .nav button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(24, 24, 27, 0.78);
+  border: 1px solid rgba(197, 164, 109, 0.45);
+  color: var(--secundario);
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.slider .nav button:hover {
+  background: var(--secundario);
+  color: #141414;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.slider .nav .prev {
+  left: 16px;
+}
+
+.slider .nav .next {
+  right: 16px;
+}
+
+/* Indicadores de paginación (Dots) */
+.dots {
+  position: absolute;
+  bottom: 16px;
+  left: 5.25rem;
+  display: flex;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.45);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 24px;
+  background: var(--secundario);
+}
+
+@media (max-width: 860px) {
+  .slide {
+    grid-template-columns: 1fr;
+    min-height: 440px;
+  }
+  .slide__left {
+    padding: 2.25rem 3.5rem 1.25rem;
+    align-items: center;
+    text-align: center;
+  }
+  .slide__right {
+    min-height: 220px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.2) 12%, rgba(0, 0, 0, 0.8) 35%, #000000 55%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.2) 12%, rgba(0, 0, 0, 0.8) 35%, #000000 55%);
+  }
+  .dots {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MercaUca - Tu Mercado Universitario</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/slider.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header id="topbar" role="banner">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand" aria-label="Inicio MERCAUCA">
+        <span>🛍️</span> MERCAUCA
+      </a>
+
+      <!-- Buscador en tiempo real -->
+      <div class="topbar__search" role="search">
+        <span class="topbar__search-icon">🔍</span>
+        <input
+          type="search"
+          id="search-input"
+          class="topbar__search-input"
+          placeholder="Buscar relojes, calculadoras, electrónica en MercaUca..."
+          autocomplete="off"
+        >
+        <div id="search-popup" class="topbar__search-popup">
+          <div id="search-status" class="topbar__search-status">Buscando…</div>
+          <ul id="search-list" class="topbar__search-list"></ul>
+        </div>
+      </div>
+
+      <!-- Acciones de Cuenta -->
+      <div class="topbar__actions">
+        <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
+          <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" width="21" height="21">
+              <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+            </svg>
+          </button>
+          <span id="topbar-user-label" class="icon-label">
+            <span class="user-pill__meta">Bienvenido</span>
+            <span class="user-pill__name-row">
+              <span class="user-pill__name">Crear cuenta</span>
+              <span class="user-pill__chevron">→</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVEGACIÓN SECUNDARIA ================= -->
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a href="index.html" class="navegacion__enlace navegacion__enlace--activo">
+      <span>✨</span> Novedades
+    </a>
+    <a href="registro.html" class="navegacion__enlace">
+      <span>📝</span> Registrarse
+    </a>
+  </nav>
+
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main class="contenedor">
+
+    <!-- SLIDER DESTACADOS -->
+    <section id="destacados">
+      <div class="slider">
+        <div class="track" aria-live="polite">
+          <div class="slide bg-verde">
+            <div class="slide__left">
+              <span class="slide__tag">🔥 Comunidad UCA</span>
+              <h2 class="slide__title">Compra y vende artículos</h2>
+              <p class="slide__text">Desde la comodidad del campus o de tu casa con entregas rápidas y seguras.</p>
+              <a href="#catalogo" class="slide__cta">Explorar catálogo ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Reloj Bulova Classic" class="slide__img" />
+            </div>
+          </div>
+
+          <div class="slide bg-vino">
+            <div class="slide__left">
+              <span class="slide__tag">💎 Estilo &amp; Accesorios</span>
+              <h2 class="slide__title">Lujo que habla por ti</h2>
+              <p class="slide__text">Joyería, relojes y accesorios únicos seleccionados para toda ocasión.</p>
+              <a href="#catalogo" class="slide__cta">Ver destacados ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Joyería y accesorios" class="slide__img" />
+            </div>
+          </div>
+
+          <div class="slide bg-azul">
+            <div class="slide__left">
+              <span class="slide__tag">⚡ Ofertas Estudiantes</span>
+              <h2 class="slide__title">Ofertas de temporada</h2>
+              <p class="slide__text">Precios rebajados y promociones exclusivas entre estudiantes.</p>
+              <a href="#catalogo" class="slide__cta">Ver productos ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Ofertas de temporada" class="slide__img" />
+            </div>
+          </div>
+        </div>
+
+        <div class="nav" aria-label="Controles del carrusel">
+          <button class="prev" type="button" aria-label="Anterior">❮</button>
+          <button class="next" type="button" aria-label="Siguiente">❯</button>
+        </div>
+
+        <div class="dots" role="tablist" aria-label="Paginación del carrusel"></div>
+      </div>
+    </section>
+
+    <!-- CATÁLOGO PÚBLICO Y NOVEDADES -->
+    <section id="catalogo">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Novedades y Catálogo Público</h1>
+          <p class="section-subtitle">Explora los artículos disponibles en el mercado universitario</p>
+        </div>
+        <div id="catalog-filters" class="catalog-filters" aria-label="Filtrar por categoría">
+          <button type="button" class="catalog-filter-pill is-active" data-categoria="">Todos</button>
+        </div>
+      </div>
+
+      <!-- Skeleton Loader mientras carga -->
+      <div id="grid-loading" class="productos-grid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+      </div>
+
+      <div id="productos-grid" class="productos-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <h2 class="footer-brand"><span>🛍️</span> MERCAUCA</h2>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
