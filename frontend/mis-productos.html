@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Productos - MercaUca</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/vender.css">
+  <link rel="stylesheet" href="css/mis-productos.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header id="topbar" role="banner">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand"><span>🛍️</span> MERCAUCA</a>
+      <div style="flex:1;"></div>
+      <div class="topbar__actions">
+        <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
+          <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" width="21" height="21">
+              <path fill="currentColor"
+                d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+            </svg>
+          </button>
+          <span id="topbar-user-label" class="icon-label">
+            <span class="user-pill__meta">Bienvenido</span>
+            <span class="user-pill__name-row">
+              <span class="user-pill__name">Crear cuenta</span>
+              <span class="user-pill__chevron">→</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVEGACIÓN ================= -->
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a href="index.html" class="navegacion__enlace"><span>✨</span> Novedades</a>
+    <a href="vender.html" class="navegacion__enlace"><span>🏷️</span> Vender Producto</a>
+    <a href="mis-productos.html" class="navegacion__enlace navegacion__enlace--activo"><span>📦</span> Mis Productos</a>
+    <a href="registro.html" class="navegacion__enlace"><span>📝</span> Registrarse</a>
+  </nav>
+
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main class="mp-container">
+
+    <!-- Vista 1: Bloqueo para Compradores -->
+    <div id="comprador-blocked-view" class="vender-card" style="display: none; text-align: center; padding: 3rem 2rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">🛍️</div>
+      <div class="vender-badge"
+        style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; margin: 0 auto 0.75rem;">
+        ROL ACTUAL: COMPRADOR
+      </div>
+      <h2 class="vender-title" style="margin-bottom: 0.75rem;">Panel Exclusivo para Vendedores</h2>
+      <p class="vender-subtitle" style="max-width: 540px; margin: 0 auto 1.5rem; line-height: 1.6;">
+        Tu cuenta posee el rol de <strong>Comprador</strong>. Para publicar y administrar tus propios artículos en
+        venta, solicita a un Administrador la activación del rol de <strong>Vendedor</strong>.
+      </p>
+      <a href="index.html" class="mp-btn-primary" style="text-decoration: none;">
+        Explorar Catálogo ➔
+      </a>
+    </div>
+
+    <!-- Vista 2: Sin Sesión Iniciada -->
+    <div id="no-login-view" class="vender-card" style="display: none; text-align: center; padding: 3rem 2rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">🔐</div>
+      <h2 class="vender-title" style="margin-bottom: 0.75rem;">Inicia Sesión para Ver Tus Productos</h2>
+      <p class="vender-subtitle" style="max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6;">
+        Debes iniciar sesión con una cuenta de <strong>Vendedor</strong> o <strong>Administrador</strong> para
+        consultar, editar o actualizar el inventario de tus publicaciones.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="login.html" class="mp-btn-primary" style="text-decoration: none;">
+          Iniciar Sesión ➔
+        </a>
+        <a href="index.html" class="mp-btn-secondary" style="text-decoration: none;">
+          Volver al catálogo
+        </a>
+      </div>
+    </div>
+
+    <!-- Vista 3: Panel de Gestión del Vendedor -->
+    <section id="mis-productos-panel" class="mp-card" style="display: none;">
+      <div class="mp-header">
+        <div>
+          <div class="mp-badge">📦 MERCAUCA · INVENTARIO PROPIO</div>
+          <h1 class="mp-title">Mis Productos Publicados</h1>
+          <p id="mp-vendedor-subtitle" class="mp-subtitle">Administra precios, existencias y detalles de tus publicaciones.</p>
+        </div>
+        <div class="mp-header-actions">
+          <button type="button" id="mp-btn-refresh" class="mp-btn-secondary">🔄 Refrescar</button>
+          <a href="vender.html" class="mp-btn-primary">➕ Publicar Producto</a>
+        </div>
+      </div>
+
+      <!-- Tarjetas KPI -->
+      <div class="mp-kpi-grid">
+        <div class="mp-kpi-box">
+          <span class="mp-kpi-label">Total Publicados</span>
+          <span id="kpi-mp-total" class="mp-kpi-value">0</span>
+        </div>
+        <div class="mp-kpi-box mp-kpi-box--ok">
+          <span class="mp-kpi-label">Disponibles</span>
+          <span id="kpi-mp-disponibles" class="mp-kpi-value">0</span>
+        </div>
+        <div class="mp-kpi-box mp-kpi-box--warn">
+          <span class="mp-kpi-label">Stock Bajo (≤ 5)</span>
+          <span id="kpi-mp-bajo" class="mp-kpi-value">0</span>
+        </div>
+        <div class="mp-kpi-box mp-kpi-box--danger">
+          <span class="mp-kpi-label">Agotados</span>
+          <span id="kpi-mp-agotados" class="mp-kpi-value">0</span>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros -->
+      <div class="mp-toolbar">
+        <div class="mp-search-wrap">
+          <span>🔍</span>
+          <input type="search" id="mp-search-input" placeholder="Buscar en mis productos por título, marca o SKU...">
+        </div>
+        <div class="mp-filter-controls">
+          <select id="mp-filter-categoria" class="mp-select" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla de Productos Propios -->
+      <div class="mp-table-wrap">
+        <table class="mp-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>SKU</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Condición</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="mp-tbody">
+            <tr>
+              <td colspan="8" class="mp-empty-box">Cargando tus productos…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= MODAL: EDITAR PRODUCTO PROPIO ================= -->
+  <div id="modal-editar-producto" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-card mp-modal-card">
+      <button type="button" id="mp-close-edit" class="modal-close-btn" aria-label="Cerrar">✕</button>
+      <h3 class="modal-title" style="margin-bottom: 0.25rem;">Editar Producto</h3>
+      <p id="mp-edit-sku-label" class="modal-text" style="margin-bottom: 1.15rem;"></p>
+
+      <form id="mp-form-edit">
+        <input type="hidden" id="mp-edit-id">
+
+        <div class="mp-form-grid">
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-titulo">Título del producto *</label>
+            <input type="text" id="mp-edit-titulo" maxlength="150" required>
+          </div>
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-marca">Marca</label>
+            <input type="text" id="mp-edit-marca" maxlength="75">
+          </div>
+        </div>
+
+        <div class="mp-form-grid">
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-categoria">Categoría *</label>
+            <select id="mp-edit-categoria" required></select>
+          </div>
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-condicion">Condición *</label>
+            <select id="mp-edit-condicion" required></select>
+          </div>
+        </div>
+
+        <div class="mp-form-grid">
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-precio">Precio (USD) *</label>
+            <input type="number" id="mp-edit-precio" step="0.01" min="0.01" max="1000000" required>
+          </div>
+          <div class="mp-field" style="margin-bottom: 0;">
+            <label for="mp-edit-stock">Existencias (Stock) *</label>
+            <input type="number" id="mp-edit-stock" step="1" min="0" max="1000000" required>
+          </div>
+        </div>
+
+        <div class="mp-field">
+          <label for="mp-edit-descripcion">Descripción</label>
+          <textarea id="mp-edit-descripcion" rows="3" maxlength="3000"></textarea>
+        </div>
+
+        <div class="mp-field">
+          <label for="mp-edit-file">Reemplazar fotografía (opcional, JPG/PNG/WebP máx. 5MB)</label>
+          <input type="file" id="mp-edit-file" accept="image/jpeg,image/png,image/webp">
+          <div id="mp-edit-preview-wrap" class="mp-edit-preview" style="display: none;">
+            <img id="mp-edit-preview-img" src="" alt="Vista previa">
+            <span style="font-size: 0.82rem; color: #64748B;">Imagen actual / seleccionada</span>
+          </div>
+        </div>
+
+        <div id="mp-edit-error" class="mp-feedback-error" style="display: none;"></div>
+
+        <div class="modal-actions">
+          <button type="button" id="mp-cancel-edit" class="btn-modal-secondary">Cancelar</button>
+          <button type="submit" id="mp-save-edit" class="btn-modal-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: CONFIRMAR ELIMINACIÓN ================= -->
+  <div id="modal-confirmar-eliminar" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button type="button" id="mp-close-del" class="modal-close-btn" aria-label="Cerrar">✕</button>
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗑️</div>
+      <h3 class="modal-title">¿Eliminar Producto?</h3>
+      <p id="mp-del-message" class="modal-text">
+        Esta acción eliminará permanentemente tu producto del catálogo.
+      </p>
+      <div class="modal-actions">
+        <button type="button" id="mp-cancel-del" class="btn-modal-secondary">Cancelar</button>
+        <button type="button" id="mp-confirm-del" class="btn-modal-primary" style="background:#DC2626; color:#FFFFFF; border-color:#DC2626;">
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <h2 class="footer-brand"><span>🛍️</span> MERCAUCA</h2>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/mis-productos.js"></script>
+</body>
+</html>
