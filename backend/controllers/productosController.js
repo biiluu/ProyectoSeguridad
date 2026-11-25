@@ -1,5 +1,22 @@
+const crypto = require('crypto');
 const pool = require('../config/db');
-const { bufferToDataUrl } = require('../utils/imagenProducto');
+const { bufferToDataUrl, validarFotoProducto } = require('../utils/imagenProducto');
+
+const CONDICIONES_PERMITIDAS = ['C001', 'C002', 'C003', 'C004', 'C005'];
+const CATEGORIAS_PERMITIDAS = ['CAT001', 'CAT002', 'CAT003', 'CAT004', 'CAT005'];
+
+/**
+ * Genera un ID corto único URL-Safe de 22 caracteres.
+ * @returns {string}
+ */
+function generarIdCorto() {
+  return crypto
+    .randomBytes(16)
+    .toString('base64')
+    .replace(/\//g, '_')
+    .replace(/\+/g, '-')
+    .replace(/=/g, '');
+}
 
 /**
  * Escapa comodines de SQL LIKE para evitar búsquedas expansivas inesperadas.
@@ -168,9 +185,131 @@ async function getDetalleProducto(req, res) {
   }
 }
 
+/**
+ * POST /api/productos
+ * Crea un nuevo producto con fotografía binaria validada por Magic Bytes y stock inicial.
+ * Requiere rol Vendedor o Administrador verificado en tiempo real.
+ */
+async function crearProducto(req, res) {
+  try {
+    const { titulo, descripcion, marca, idCondicion, idCategoria, precio, stock } = req.body || {};
+    const file = req.file;
+
+    // 1. Validación estricta de imagen (existencia, 5MB, MIME y Magic Bytes)
+    const checkFoto = validarFotoProducto(file);
+    if (!checkFoto.valido) {
+      return res.status(400).json({ message: checkFoto.error });
+    }
+
+    // 2. Validación y sanitización de campos
+    if (!titulo || typeof titulo !== 'string' || titulo.trim().length < 3) {
+      return res.status(400).json({ message: 'El título del producto debe tener al menos 3 caracteres.' });
+    }
+
+    const tituloLimpio = titulo.trim().slice(0, 150).replace(/[<>]/g, '');
+    if (tituloLimpio.length < 3) {
+      return res.status(400).json({ message: 'El título del producto debe contener al menos 3 caracteres válidos.' });
+    }
+
+    const descLimpia = (descripcion ? String(descripcion) : '').trim().slice(0, 3000).replace(/[<>]/g, '');
+    const marcaLimpia = (marca && String(marca).trim() ? String(marca) : 'Genérica')
+      .trim()
+      .slice(0, 75)
+      .replace(/[<>]/g, '');
+
+    const precioStr = String(precio ?? '').trim();
+    const precioNumerico = Number(precioStr);
+    if (!precioStr || !Number.isFinite(precioNumerico) || precioNumerico <= 0 || precioNumerico > 1000000) {
+      return res.status(400).json({
+        message: 'El precio debe ser un número válido mayor a 0 y menor o igual a $1,000,000.'
+      });
+    }
+
+    const stockStr = String(stock ?? '').trim();
+    if (!/^\d+$/.test(stockStr)) {
+      return res.status(400).json({ message: 'El stock debe ser un número entero entre 0 y 1,000,000.' });
+    }
+    const stockInicial = Number.parseInt(stockStr, 10);
+    if (!Number.isInteger(stockInicial) || stockInicial < 0 || stockInicial > 1000000) {
+      return res.status(400).json({ message: 'El stock debe ser un número entero entre 0 y 1,000,000.' });
+    }
+
+    // Evitar que vendedores publiquen en categorías restringidas del slider (CATS01)
+    if (idCategoria && String(idCategoria).trim() === 'CATS01') {
+      return res.status(400).json({ message: 'La categoría seleccionada no está permitida para publicación.' });
+    }
+
+    const condicion = CONDICIONES_PERMITIDAS.includes(String(idCondicion || '').trim())
+      ? String(idCondicion).trim()
+      : 'C001';
+    const categoria = CATEGORIAS_PERMITIDAS.includes(String(idCategoria || '').trim())
+      ? String(idCategoria).trim()
+      : 'CAT001';
+
+    // Identificar al vendedor exclusivamente desde el token verificado (previene suplantación)
+    const vendedor = req.vendedorUser?.id_usuario || req.user?.sub || req.user?.unique_name || null;
+    if (!vendedor) {
+      return res.status(401).json({ message: 'No se pudo identificar la cuenta del vendedor.' });
+    }
+
+    const idGenerado = generarIdCorto();
+    const idMedia = `${idGenerado}M`;
+    const idVariante = idGenerado;
+    const fotoBuffer = file.buffer;
+
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      await connection.query(
+        `INSERT INTO productos
+         (id_producto, id_vendedor, titulo_producto, descripcion, marca, id_condicion, foto, id_categoria, precio, fechaCreacion, fechaModificacion)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+        [idGenerado, vendedor, tituloLimpio, descLimpia, marcaLimpia, condicion, fotoBuffer, categoria, precioNumerico]
+      );
+
+      await connection.query(
+        `INSERT INTO producto_media
+         (id_media, id_producto, posicion_galeria, producto_primario, Novedades)
+         VALUES (?, ?, 0, 0, 1)`,
+        [idMedia, idGenerado]
+      );
+
+      await connection.query(
+        `INSERT INTO variantes_productos
+         (id_producto_variante, id_producto, talla, color, stock)
+         VALUES (?, ?, NULL, NULL, ?)`,
+        [idVariante, idGenerado, stockInicial]
+      );
+
+      await connection.commit();
+
+      return res.status(201).json({
+        idProducto: idGenerado,
+        idProductoVariante: idVariante,
+        stock: stockInicial,
+        mensaje: 'Producto creado correctamente'
+      });
+    } catch (txErr) {
+      await connection.rollback();
+      throw txErr;
+    } finally {
+      connection.release();
+    }
+  } catch (err) {
+    console.error('Error al crear producto:', err);
+    return res.status(500).json({ message: 'Error al registrar el producto.', error: err.message });
+  }
+}
+
 module.exports = {
+  CONDICIONES_PERMITIDAS,
+  CATEGORIAS_PERMITIDAS,
+  generarIdCorto,
   escapeLikePattern,
+  validarFotoProducto,
   listarCatalogos,
   listarProductos,
-  getDetalleProducto
+  getDetalleProducto,
+  crearProducto
 };
