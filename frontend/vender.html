@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vender Producto - MercaUca</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/vender.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header id="topbar" role="banner">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand"><span>🛍️</span> MERCAUCA</a>
+      <div style="flex:1;"></div>
+      <div class="topbar__actions">
+        <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
+          <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" width="21" height="21">
+              <path fill="currentColor"
+                d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+            </svg>
+          </button>
+          <span id="topbar-user-label" class="icon-label">
+            <span class="user-pill__meta">Bienvenido</span>
+            <span class="user-pill__name-row">
+              <span class="user-pill__name">Crear cuenta</span>
+              <span class="user-pill__chevron">→</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVEGACIÓN ================= -->
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a href="index.html" class="navegacion__enlace"><span>✨</span> Novedades</a>
+    <a href="vender.html" class="navegacion__enlace navegacion__enlace--activo"><span>🏷️</span> Vender Producto</a>
+    <a href="registro.html" class="navegacion__enlace"><span>📝</span> Registrarse</a>
+  </nav>
+
+  <!-- ================= FORMULARIO PUBLICAR O AVISO DE ROL ================= -->
+  <main class="vender-container">
+
+    <!-- Vista 1: Bloqueo para Compradores -->
+    <div id="comprador-blocked-view" class="vender-card" style="display: none; text-align: center; padding: 3rem 2rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">🛍️</div>
+      <div class="vender-badge"
+        style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; margin: 0 auto 0.75rem;">
+        ROL ACTUAL: COMPRADOR
+      </div>
+      <h2 class="vender-title" style="margin-bottom: 0.75rem;">Modo Exclusivo de Compra</h2>
+      <p class="vender-subtitle" style="max-width: 540px; margin: 0 auto 1.5rem; line-height: 1.6;">
+        Tu cuenta tiene asignado el rol de <strong>Comprador</strong>. Como comprador puedes explorar el catálogo
+        universitario, consultar detalles y realizar compras de forma segura.
+      </p>
+
+      <div
+        style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.25rem; max-width: 500px; margin: 0 auto 1.75rem; text-align: left;">
+        <strong style="color: var(--primarioOscuro); font-size: 0.95rem; display: block; margin-bottom: 6px;">
+          🏷️ ¿Quieres vender artículos en MercaUca?
+        </strong>
+        <p style="font-size: 0.86rem; color: #64748B; margin: 0; line-height: 1.5;">
+          Para publicar productos en venta, tu cuenta debe poseer el rol de <strong>Vendedor</strong>. Puedes solicitar
+          la activación de este rol a un Administrador de la plataforma.
+        </p>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="index.html" class="ap-boton-enviar" style="width: auto; padding: 0.85rem 2rem; text-decoration: none;">
+          Explorar Catálogo ➔
+        </a>
+      </div>
+    </div>
+
+    <!-- Vista 2: Sin Sesión Iniciada -->
+    <div id="no-login-view" class="vender-card" style="display: none; text-align: center; padding: 3rem 2rem;">
+      <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">🔐</div>
+      <h2 class="vender-title" style="margin-bottom: 0.75rem;">Inicia Sesión para Vender</h2>
+      <p class="vender-subtitle" style="max-width: 500px; margin: 0 auto 1.5rem; line-height: 1.6;">
+        Debes iniciar sesión con una cuenta de <strong>Vendedor</strong> o <strong>Administrador</strong> para publicar
+        artículos dentro del marketplace.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="login.html" class="ap-boton-enviar" style="width: auto; padding: 0.85rem 2rem; text-decoration: none;">
+          Iniciar Sesión ➔
+        </a>
+        <a href="index.html" class="btn-modal-secondary" style="flex: 0 0 auto; padding: 0.85rem 1.5rem;">
+          Volver al catálogo
+        </a>
+      </div>
+    </div>
+
+    <!-- Vista 3: Formulario Autorizado para Vendedores y Administradores -->
+    <div id="vendedor-form-card" class="vender-card" style="display: none;">
+      <div class="vender-header">
+        <div class="vender-badge">🏷️ MERCAUCA · VENDEDORES</div>
+        <h1 class="vender-title">Publicar Producto</h1>
+        <p class="vender-subtitle">Pon en venta tus artículos dentro de la comunidad universitaria.</p>
+      </div>
+
+      <div class="vender-grid">
+        <!-- Columna Izquierda: Subida de Foto -->
+        <div>
+          <label class="input-label" style="margin-bottom: 10px; display:block; font-weight:700; font-size:0.9rem;">Foto
+            del producto *</label>
+          <input type="file" id="ap-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+
+          <div id="ap-dropzone" class="ap-dropzone">
+            <div class="ap-dropzone-icon">📷</div>
+            <div class="ap-dropzone-text">Haz clic o arrastra tu imagen aquí</div>
+            <div class="ap-dropzone-sub">Formatos PNG, JPG, WebP hasta 5MB</div>
+          </div>
+
+          <div id="ap-preview-box" class="ap-preview-box" style="display: none;">
+            <div class="ap-preview-header">
+              <span>Vista previa</span>
+              <span>Catálogo MercaUca ✓</span>
+            </div>
+            <img id="ap-preview-img" src="" alt="Vista previa" class="ap-preview-img">
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Datos -->
+        <form id="ap-form" class="vender-form">
+          <div class="input-group">
+            <label class="input-label" for="ap-titulo"
+              style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Título del producto
+              *</label>
+            <input type="text" id="ap-titulo" class="ap-input" maxlength="150"
+              placeholder="Ej. Calculadora Científica Casio fx-991LAX" required>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="ap-descripcion"
+              style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Descripción detallada
+              *</label>
+            <textarea id="ap-descripcion" class="ap-textarea" rows="4" maxlength="3000"
+              placeholder="Especifica el estado, accesorios incluidos, tiempo de uso..." required></textarea>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="ap-marca"
+              style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Marca</label>
+            <input type="text" id="ap-marca" class="ap-input" maxlength="75" placeholder="Ej. Casio, Apple, Genérica...">
+          </div>
+
+          <div class="ap-flex">
+            <div class="input-group">
+              <label class="input-label" for="ap-condicion"
+                style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Condición *</label>
+              <select id="ap-condicion" class="ap-select" required>
+                <option value="C001">Nuevo</option>
+                <option value="C002">Usado - Como nuevo</option>
+                <option value="C003">Usado - Buen estado</option>
+                <option value="C004">Usado - Regular</option>
+                <option value="C005">Reacondicionado</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="ap-categoria"
+                style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Categoría *</label>
+              <select id="ap-categoria" class="ap-select" required>
+                <option value="CAT001">Relojes</option>
+                <option value="CAT002">Joyería</option>
+                <option value="CAT003">Electrónica</option>
+                <option value="CAT004">Moda</option>
+                <option value="CAT005">Hogar y decoración</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ap-flex">
+            <div class="input-group">
+              <label class="input-label" for="ap-precio"
+                style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Precio de venta (USD)
+                *</label>
+              <input type="number" id="ap-precio" class="ap-input" step="0.01" min="0.01" max="1000000"
+                placeholder="Ej. 25.00" required>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="ap-stock"
+                style="font-weight:700; font-size:0.88rem; margin-bottom:4px; display:block;">Existencias iniciales
+                (Stock) *</label>
+              <input type="number" id="ap-stock" class="ap-input" step="1" min="1" max="1000000" value="5"
+                placeholder="Ej. 5" required>
+            </div>
+          </div>
+
+          <div class="ap-user-badge">
+            <span>👤 Vendedor activo:</span>
+            <strong id="ap-user-id">Verificando...</strong>
+          </div>
+
+          <button type="submit" id="ap-submit-btn" class="ap-boton-enviar">
+            Publicar producto ahora ➔
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <h2 class="footer-brand"><span>🛍️</span> MERCAUCA</h2>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/vender.js"></script>
+</body>
+</html>
