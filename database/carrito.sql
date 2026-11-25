@@ -13,7 +13,7 @@ CREATE TABLE `carrito` (
     FOREIGN KEY (`id_comprador`)
     REFERENCES `usuario` (`id_usuario`)
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- Productos que contiene cada carrito.
@@ -37,7 +37,7 @@ CREATE TABLE `articulos_carrito` (
     FOREIGN KEY (`id_producto_variante`)
     REFERENCES `variantes_productos` (`id_producto_variante`)
     ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- Datos de prueba tomados del proyecto original.
