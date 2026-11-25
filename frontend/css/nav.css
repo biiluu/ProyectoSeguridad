@@ -1,0 +1,54 @@
+/* =====================================================================
+   MercaUca - Estilos Navegación Secundaria (Sub-barra Integrada)
+   ===================================================================== */
+.navegacion {
+  width: 100%;
+  background: #222226;
+  border-bottom: 2px solid rgba(197, 164, 109, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 0 var(--container-pad, 1.5rem);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.navegacion__enlace {
+  font-family: var(--fuentePrincipal);
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #D4D4D8;
+  position: relative;
+  padding: 0.7rem 0.5rem;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navegacion__enlace::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 3px;
+  background: var(--secundario);
+  border-radius: 3px 3px 0 0;
+  transform: scaleX(0);
+  transition: transform 0.22s ease;
+}
+
+.navegacion__enlace:hover {
+  color: var(--blanco);
+}
+
+.navegacion__enlace:hover::after,
+.navegacion__enlace--activo::after {
+  transform: scaleX(1);
+}
+
+.navegacion__enlace--activo {
+  color: var(--secundario);
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Producto - MercaUca</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/detail.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header id="topbar" role="banner">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand"><span>🛍️</span> MERCAUCA</a>
+      <div style="flex:1;"></div>
+      <div class="topbar__actions">
+        <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
+          <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" width="21" height="21">
+              <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+            </svg>
+          </button>
+          <span id="topbar-user-label" class="icon-label">
+            <span class="user-pill__meta">Bienvenido</span>
+            <span class="user-pill__name-row">
+              <span class="user-pill__name">Crear cuenta</span>
+              <span class="user-pill__chevron">→</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVEGACIÓN ================= -->
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a href="index.html" class="navegacion__enlace"><span>✨</span> Novedades</a>
+    <a href="registro.html" class="navegacion__enlace"><span>📝</span> Registrarse</a>
+  </nav>
+
+  <!-- ================= DETALLE ================= -->
+  <main class="pd-container">
+    <a href="index.html" class="pd-back-btn">← Volver al catálogo</a>
+
+    <p id="pd-loading" class="text-center text-muted" style="padding: 3rem; font-weight: 600;">Cargando información del producto…</p>
+
+    <div id="pd-content" class="pd-grid" style="display:none;">
+      <!-- Galería Izquierda -->
+      <div class="pd-gallery">
+        <img id="pd-img" src="" alt="Imagen de producto" class="pd-image">
+        <div class="pd-image-badge">
+          <span class="pd-image-badge-main">MercaUca</span>
+          <span class="pd-image-badge-sub">Producto verificado ✓</span>
+        </div>
+      </div>
+
+      <!-- Información Derecha -->
+      <div class="pd-info">
+        <span id="pd-category" class="pd-chip-category">Catálogo General</span>
+        <h1 id="pd-title" class="pd-title">Título del Producto</h1>
+
+        <div class="pd-meta-row">
+          <span class="pd-meta-pill">Código: <strong id="pd-sku">#N/A</strong></span>
+          <span class="pd-meta-pill">Marca: <strong id="pd-brand">Genérica</strong></span>
+          <span class="pd-meta-pill">Condición: <strong id="pd-condition">Nuevo</strong></span>
+          <span class="pd-meta-pill">Vendedor: <strong id="pd-seller">MercaUca</strong></span>
+          <span id="pd-stock-pill" class="pd-meta-pill">✓ Disponible · Compra segura</span>
+        </div>
+
+        <div class="pd-price-row">
+          <span class="pd-price-label">Precio unitario:</span>
+          <span id="pd-unit-price" class="pd-price-value">$0.00</span>
+        </div>
+
+        <!-- Tarjeta de Cantidad y Resumen -->
+        <div class="pd-summary-card">
+          <div>
+            <span class="pd-block-title">Cantidad</span>
+            <div class="pd-qty-control">
+              <button id="pd-btn-minus" type="button" class="pd-qty-btn">−</button>
+              <span id="pd-qty-value" class="pd-qty-value">1</span>
+              <button id="pd-btn-plus" type="button" class="pd-qty-btn">+</button>
+            </div>
+            <span id="pd-stock-max-hint" style="font-size:0.75rem; color:#64748B; margin-top:4px; display:block;"></span>
+          </div>
+          <div>
+            <span class="pd-block-title">Total Estimado</span>
+            <div class="pd-total-row">
+              <span id="pd-calc-label" class="pd-total-label">1 x $0.00</span>
+              <span id="pd-calc-total" class="pd-total-value">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="pd-description">
+          <h2 class="pd-subtitle">DESCRIPCIÓN DEL PRODUCTO</h2>
+          <p id="pd-desc" class="pd-description-text"></p>
+        </div>
+
+        <!-- Botón Agregar al Carrito -->
+        <button id="pd-add-to-cart" type="button" class="pd-add-btn">
+          <div>
+            <span class="pd-add-main">Agregar al carrito</span>
+            <span id="pd-btn-total-sub" class="pd-add-sub">Total estimado: $0.00 USD</span>
+          </div>
+          <span class="pd-add-icon">🛒</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <h2 class="footer-brand"><span>🛍️</span> MERCAUCA</h2>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/producto.js"></script>
+</body>
+</html>
