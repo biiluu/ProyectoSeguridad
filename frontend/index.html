@@ -40,6 +40,10 @@
 
       <!-- Acciones de Cuenta -->
       <div class="topbar__actions">
+        <!-- Botón para abrir el carrito -->
+        <button type="button" class="icon-btn" aria-label="Abrir carrito" onclick="cart.open()"> 🛒
+          <span id="cart-badge" class="badge">0</span>
+        </button>
         <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
           <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
             <svg viewBox="0 0 24 24" width="21" height="21">
