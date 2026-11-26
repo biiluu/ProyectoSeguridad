@@ -169,7 +169,7 @@ async function cargarDetalle(id) {
       const total = unit * cantidad;
       const variantId = productoActual.idProductoVariante || productoActual.idProducto;
 
-      const ok = await window.cart.addItem(variantId, cantidad, total);
+      const ok = await window.cart.addItem(variantId, cantidad, unit);
 
       addBtn.disabled = false;
       addBtn.querySelector('.pd-add-main').textContent = prevText;

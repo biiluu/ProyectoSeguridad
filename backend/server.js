@@ -16,6 +16,7 @@ app.use(['/api/productos', '/api/Productos'], require('./routes/productosRoutes'
 app.use(['/api/novedades', '/api/Novedades'], require('./routes/novedadesRoutes'));
 app.use(['/api/search', '/api/Search'], require('./routes/searchRoutes'));
 app.use('/api/usuarios', require('./routes/sesionRoutes'));
+app.use('/api/carrito', require('./routes/carritoRoutes'));
 app.use(express.static(require('node:path').join(__dirname, '../frontend')));
 
 app.get('/api/health', (req, res) => {
