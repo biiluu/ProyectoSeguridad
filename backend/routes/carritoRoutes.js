@@ -10,8 +10,7 @@ router.get('/:usuario', carritoController.getCarritoPorUsuario);
 router.get('/cantidad-articulos/:idUsuario', carritoController.obtenerCantidadArticulos);
 router.post('/agregar-articulo', carritoController.agregarArticulo);
 router.delete('/eliminar-articulo/:idUsuario/:idProducto', carritoController.eliminarArticuloCarrito);
-// Pendiente de integrar en la rama de compras y facturas.
-//router.post('/finalizar-compra/:idUsuario', carritoController.finalizarCompra);
+router.post('/finalizar-compra/:idUsuario', carritoController.finalizarCompra);
 
 module.exports = router;
 

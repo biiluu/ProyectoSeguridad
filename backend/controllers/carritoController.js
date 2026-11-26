@@ -49,11 +49,11 @@ async function getCarritoPorUsuario(req, res) {
               ac.moneda,
               ac.id_producto_variante AS idProductoVariante,
               COALESCE(vp.stock, 0) AS stockDisponible
-       FROM articulos_carrito ac
-       INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
-       INNER JOIN variantes_productos vp ON ac.id_producto_variante = vp.id_producto_variante
-       INNER JOIN productos p ON vp.id_producto = p.id_producto
-       WHERE c.id_comprador = ?`,
+        FROM articulos_carrito ac
+        INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
+        INNER JOIN variantes_productos vp ON ac.id_producto_variante = vp.id_producto_variante
+        INNER JOIN productos p ON vp.id_producto = p.id_producto
+        WHERE c.id_comprador = ?`,
       [u]
     );
 
@@ -151,11 +151,11 @@ async function agregarArticulo(req, res) {
 
     // 0. Validación de Stock Funcional en tiempo real
     const [variantes] = await pool.query(
-      `SELECT vp.id_producto_variante, vp.stock, p.titulo_producto 
-       FROM variantes_productos vp
-       INNER JOIN productos p ON vp.id_producto = p.id_producto
-       WHERE vp.id_producto_variante = ? OR vp.id_producto = ?
-       LIMIT 1`,
+      `SELECT vp.id_producto_variante, vp.stock, p.titulo_producto, p.precio AS precio_catalogo
+        FROM variantes_productos vp
+        INNER JOIN productos p ON vp.id_producto = p.id_producto
+        WHERE vp.id_producto_variante = ? OR vp.id_producto = ?
+        LIMIT 1`,
       [pv, pv]
     );
 
@@ -164,6 +164,15 @@ async function agregarArticulo(req, res) {
     }
 
     const varianteData = variantes[0];
+
+    const precioCatalogo = Number(varianteData.precio_catalogo);
+
+    if (!Number.isFinite(precioCatalogo) || precioCatalogo < 0) {
+      return res.status(500).json({
+        message: 'El precio del producto en el catálogo no es válido.'
+      });
+    }
+
     const stockDisponible = parseInt(varianteData.stock, 10) || 0;
 
     if (stockDisponible <= 0) {
@@ -183,9 +192,9 @@ async function agregarArticulo(req, res) {
     // 1. Validar si ya existe ese artículo en el carrito del usuario
     const [existentes] = await pool.query(
       `SELECT ac.id_articulos_carrito, ac.cantidad 
-       FROM articulos_carrito ac
-       INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
-       WHERE c.id_comprador = ? AND ac.id_producto_variante = ?`,
+        FROM articulos_carrito ac
+        INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
+        WHERE c.id_comprador = ? AND ac.id_producto_variante = ?`,
       [u, pv]
     );
 
@@ -220,8 +229,8 @@ async function agregarArticulo(req, res) {
 
     await pool.query(
       `INSERT INTO articulos_carrito (id_articulos_carrito, id_carrito, id_producto_variante, cantidad, precio, moneda)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [idArticulo, idCarrito, pv, cantidadNum, precioNum, monedaFinal]
+        VALUES (?, ?, ?, ?, ?, ?)`,
+      [idArticulo, idCarrito, pv, cantidadNum, precioCatalogo, monedaFinal]
     );
 
     return res.status(200).json({
@@ -292,6 +301,16 @@ async function finalizarCompra(req, res) {
   try {
     const { idUsuario } = req.params;
 
+    const { modoEntrega } = req.body || {};
+
+    if (modoEntrega !== 'store' && modoEntrega !== 'home') {
+      return res.status(400).json({
+        message: 'Selecciona un método de entrega válido.'
+      });
+    }
+
+    const costoEnvio = modoEntrega === 'home' ? 9.90 : 0;
+
     if (!idUsuario || !idUsuario.trim()) {
       return res.status(400).json({ message: 'El id de usuario es requerido.' });
     }
@@ -330,17 +349,17 @@ async function finalizarCompra(req, res) {
               p.id_vendedor AS idVendedor,
               p.titulo_producto AS tituloProducto,
               ac.cantidad,
-              ac.precio,
+              p.precio AS precio,
               ac.moneda,
               ac.id_producto_variante AS idProductoVariante,
               c.id_carrito AS idCarrito,
               COALESCE(vp.stock, 0) AS stockDisponible
-       FROM articulos_carrito ac
-       INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
-       INNER JOIN variantes_productos vp ON ac.id_producto_variante = vp.id_producto_variante
-       INNER JOIN productos p ON vp.id_producto = p.id_producto
-       WHERE c.id_comprador = ?
-       FOR UPDATE`,
+        FROM articulos_carrito ac
+        INNER JOIN carrito c ON ac.id_carrito = c.id_carrito
+        INNER JOIN variantes_productos vp ON ac.id_producto_variante = vp.id_producto_variante
+        INNER JOIN productos p ON vp.id_producto = p.id_producto
+        WHERE c.id_comprador = ?
+        FOR UPDATE`,
       [u]
     );
 
@@ -370,16 +389,17 @@ async function finalizarCompra(req, res) {
     }
 
     const idCarrito = itemsCarrito[0].idCarrito;
-    const total = itemsCarrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad, 10) || 1), 0);
+    const subtotal = itemsCarrito.reduce((acc, item) => acc + (parseFloat(item.precio) || 0) * (parseInt(item.cantidad, 10) || 1),0);
+    const total = subtotal + costoEnvio;
     const moneda = itemsCarrito[0].moneda || '$';
     const nombreCliente = usuarioData.nombre_usuario || 'Cliente MercaUca';
 
     // 2.2 Registrar Orden
     const idOrden = crypto.randomUUID();
     await connection.query(
-      `INSERT INTO orden (id_orden, id_comprador, id_estado_orden, monto_total, moneda, fechaCreacion, fecha_pago)
-       VALUES (?, ?, 'EO02', ?, ?, NOW(), NOW())`,
-      [idOrden, u, total, moneda]
+      `INSERT INTO orden (id_orden, id_comprador, id_estado_orden, monto_total, moneda, modo_entrega, costo_envio, fechaCreacion, fecha_pago)
+      VALUES (?, ?, 'EO01', ?, ?, ?, ?, NOW(), NULL)`,
+      [idOrden, u, total, moneda, modoEntrega, costoEnvio]
     );
 
     // 2.3 Descontar stock e insertar artículos de orden
@@ -392,15 +412,15 @@ async function finalizarCompra(req, res) {
       // Insertar detalle en articulos_orden
       await connection.query(
         `INSERT INTO articulos_orden (id_articulo_orden, id_orden, id_vendedor, id_producto_variante, id_estado_articulo_orden, cantidad, sub_total)
-         VALUES (?, ?, ?, ?, 'EA01', ?, ?)`,
+          VALUES (?, ?, ?, ?, 'EA01', ?, ?)`,
         [idArticuloOrden, idOrden, vendedor, item.idProductoVariante, cant, subTotal]
       );
 
       // Descuento atómico del inventario en variantes_productos
       await connection.query(
         `UPDATE variantes_productos 
-         SET stock = stock - ? 
-         WHERE id_producto_variante = ?`,
+          SET stock = stock - ? 
+          WHERE id_producto_variante = ?`,
         [cant, item.idProductoVariante]
       );
     }
@@ -413,15 +433,42 @@ async function finalizarCompra(req, res) {
     await connection.commit();
 
     // 4. Enviar correo de confirmación de compra
+    // La compra ya se guardó. El correo se intenta por separado.
+    let correoEnviado = false;
+
     try {
-      await enviarCorreoCompra(usuarioData.email_usuario, nombreCliente, itemsCarrito, total, moneda);
-      console.log(`✉️ [Compra] Factura enviada a ${usuarioData.email_usuario}`);
+      await enviarCorreoCompra(
+        usuarioData.email_usuario,
+        nombreCliente,
+        itemsCarrito,
+        total,
+        moneda,
+        costoEnvio,
+        modoEntrega
+      );
+      correoEnviado = true;
     } catch (mailErr) {
-      console.error('⚠️ [Compra] Error enviando correo de factura:', mailErr.message);
+      console.error('No se pudo enviar el correo de compra:', mailErr.message);
     }
 
     return res.status(200).json({
-      mensaje: 'Compra finalizada exitosamente. Se descontó el inventario y se envió la factura a tu correo.'
+      mensaje: correoEnviado
+        ? 'Compra finalizada y correo enviado.'
+        : 'Compra finalizada. No se pudo enviar el correo.',
+      idOrden,
+      comprador: usuarioData.nombre_usuario,
+      subtotal,
+      costoEnvio,
+      total,
+      moneda,
+      modoEntrega,
+      correoEnviado,
+      productos: itemsCarrito.map(item => ({
+      nombre: item.tituloProducto,
+      cantidad: Number(item.cantidad),
+      precioUnitario: Number(item.precio),
+      subtotal: Number(item.precio) * Number(item.cantidad)
+    }))
     });
   } catch (err) {
     await connection.rollback();

@@ -304,7 +304,7 @@ const cart = {
           <h3 class="modal-title">Confirmar compra</h3>
           <p class="modal-text">
             Vas a realizar el pedido por <strong id="checkout-confirm-total">$0.00</strong>.
-            <br>Se enviará una factura detallada a tu correo institucional.
+            <br>Se intentará enviar una confirmación a tu correo.
           </p>
           <div class="modal-actions">
             <button id="btn-cancel-checkout" class="btn-modal-secondary">Cancelar</button>
@@ -337,14 +337,17 @@ const cart = {
     }
 
     try {
-      const res = await window.api.post(`/api/Carrito/finalizar-compra/${encodeURIComponent(user.idUsuario)}`, {});
+      const res = await window.api.post(
+        `/api/Carrito/finalizar-compra/${encodeURIComponent(user.idUsuario)}`,
+        { modoEntrega: this.shippingMode }
+      );
       const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
         this.products = [];
         this.render();
         this.updateBadge();
-        this.showSuccessModal();
+        this.showSuccessModal(data);
       } else {
         window.showToast(data.message || data.mensaje || 'No se pudo finalizar la compra.', 'error');
         this.loadCart();
@@ -360,30 +363,92 @@ const cart = {
     }
   },
 
-  showSuccessModal() {
-    let modal = document.getElementById('checkout-success-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'checkout-success-modal';
-      modal.className = 'modal-overlay';
-      modal.innerHTML = `
-        <div class="modal-card">
-          <div class="success-icon">✔</div>
-          <h3 class="modal-title">¡Compra realizada!</h3>
-          <p class="modal-text">
-            Te hemos enviado un correo electrónico con el resumen detallado de tu pedido.
-          </p>
-          <button id="btn-success-close" class="btn-modal-primary">Aceptar</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
+  showSuccessModal(data) {
+  // Cerrar una factura anterior si aún estuviera abierta.
+  const anterior = document.getElementById('checkout-success-modal');
+  if (anterior) anterior.remove();
 
-      modal.querySelector('#btn-success-close').onclick = () => {
-        modal.remove();
-        cart.close();
-      };
-      modal.onclick = (e) => { if (e.target === modal) { modal.remove(); cart.close(); } };
+  const modal = document.createElement('div');
+  modal.id = 'checkout-success-modal';
+  modal.className = 'modal-overlay';
+
+  // El HTML fijo define la estructura; los datos se agregan como texto.
+  modal.innerHTML = `
+    <div class="modal-card" style="max-width: 650px; max-height: 90vh; overflow-y: auto; text-align: left;">
+      <h2 class="modal-title">Factura de compra</h2>
+      <p>Detalle de tu pedido en MercaUca</p>
+
+      <p><strong>Orden:</strong> <span id="factura-orden"></span></p>
+      <p><strong>Comprador:</strong> <span id="factura-comprador"></span></p>
+      <p><strong>Estado:</strong> Pendiente</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+          <tr>
+            <th style="text-align: left;">Producto</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="factura-productos"></tbody>
+      </table>
+
+      <p><strong>Entrega:</strong> <span id="factura-entrega"></span></p>
+      <p><strong>Subtotal:</strong> <span id="factura-subtotal"></span></p>
+      <p><strong>Envío:</strong> <span id="factura-envio"></span></p>
+      <p><strong>Total:</strong> <span id="factura-total"></span></p>
+
+      <p id="factura-correo" style="font-size: 0.9rem;"></p>
+
+      <button id="factura-cerrar" type="button" class="btn-modal-primary">
+        Cerrar factura
+      </button>
+    </div>
+  `;
+
+  const formatoPrecio = valor => `$${Number(valor).toFixed(2)}`;
+
+  modal.querySelector('#factura-orden').textContent = data.idOrden;
+  modal.querySelector('#factura-comprador').textContent = data.comprador;
+  modal.querySelector('#factura-entrega').textContent =
+    data.modoEntrega === 'home' ? 'Envío a domicilio' : 'Retiro en campus UCA';
+  modal.querySelector('#factura-subtotal').textContent = formatoPrecio(data.subtotal);
+  modal.querySelector('#factura-envio').textContent = formatoPrecio(data.costoEnvio);
+  modal.querySelector('#factura-total').textContent = formatoPrecio(data.total);
+
+  const cuerpoTabla = modal.querySelector('#factura-productos');
+
+  for (const producto of data.productos) {
+    const fila = document.createElement('tr');
+    const valores = [
+      producto.nombre,
+      producto.cantidad,
+      formatoPrecio(producto.precioUnitario),
+      formatoPrecio(producto.subtotal)
+    ];
+
+    for (const valor of valores) {
+      const celda = document.createElement('td');
+      celda.textContent = valor;
+      celda.style.padding = '10px 4px';
+      celda.style.borderBottom = '1px solid #e5e7eb';
+      fila.appendChild(celda);
     }
+
+    cuerpoTabla.appendChild(fila);
+  }
+
+  modal.querySelector('#factura-correo').textContent = data.correoEnviado
+    ? 'La confirmación fue enviada a tu correo.'
+    : 'La compra se guardó, pero no se pudo enviar el correo.';
+
+  modal.querySelector('#factura-cerrar').onclick = () => {
+    modal.remove();
+    this.close();
+  };
+
+  document.body.appendChild(modal);
   }
 };
 
