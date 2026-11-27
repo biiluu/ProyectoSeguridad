@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MercaUca — Administración de Usuarios</title>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <div class="admin-wrap">
+    <header class="admin-header">
+      <h1>Administración de Usuarios</h1>
+      <a href="index.html" class="admin-link-back">Volver al sitio</a>
+    </header>
+
+    <div id="no-login-view" style="display:none;" class="admin-aviso">
+      Debes iniciar sesión para ver esta sección. <a href="login.html">Iniciar sesión</a>
+    </div>
+
+    <div id="no-admin-view" style="display:none;" class="admin-aviso">
+      Acceso denegado: esta sección es solo para administradores.
+    </div>
+
+    <div id="admin-usuarios-panel" style="display:none;">
+      <section class="admin-form-box">
+        <h2>Crear usuario</h2>
+        <form id="form-crear-usuario" class="admin-form">
+          <input type="text" id="cu-id" placeholder="Usuario (3-50 caracteres)" required />
+          <input type="text" id="cu-nombre" placeholder="Nombre completo" required />
+          <input type="email" id="cu-email" placeholder="Correo electrónico" required />
+          <input type="text" id="cu-telefono" placeholder="Teléfono" />
+          <input type="password" id="cu-password" placeholder="Contraseña (mín. 6)" required />
+          <select id="cu-rol" required></select>
+          <button type="submit">Crear</button>
+        </form>
+        <p id="cu-error" class="admin-error" style="display:none;"></p>
+      </section>
+
+      <section class="admin-table-box">
+        <h2>Usuarios registrados</h2>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="au-tbody"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <div id="modal-editar-usuario" class="admin-modal" style="display:none;">
+      <div class="admin-modal-content">
+        <h2>Editar usuario</h2>
+        <form id="form-editar-usuario" class="admin-form">
+          <input type="hidden" id="eu-id" />
+          <input type="text" id="eu-nombre" placeholder="Nombre completo" />
+          <input type="email" id="eu-email" placeholder="Correo electrónico" />
+          <input type="text" id="eu-telefono" placeholder="Teléfono" />
+          <select id="eu-rol"></select>
+          <select id="eu-estado">
+            <option value="ACT">Activo</option>
+            <option value="INA">Inactivo</option>
+          </select>
+          <div class="admin-modal-actions">
+            <button type="button" id="eu-cancelar">Cancelar</button>
+            <button type="submit">Guardar cambios</button>
+          </div>
+        </form>
+        <p id="eu-error" class="admin-error" style="display:none;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>window.API_URL = '';</script>
+  <script src="js/api.js"></script>
+  <script src="js/admin-usuarios.js"></script>
+</body>
+</html>

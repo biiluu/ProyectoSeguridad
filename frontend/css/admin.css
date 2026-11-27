@@ -1,0 +1,25 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  margin: 0;
+  padding: 20px;
+}
+.admin-wrap { max-width: 1100px; margin: 0 auto; }
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.admin-link-back { color: #93c5fd; text-decoration: none; }
+.admin-aviso { background: #1e293b; padding: 16px; border-radius: 8px; }
+.admin-form-box, .admin-table-box { background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+.admin-form { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-form input, .admin-form select { padding: 8px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; }
+.admin-form textarea { width: 100%; min-height: 70px; padding: 8px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; }
+.admin-form button { padding: 8px 16px; border-radius: 6px; border: none; background: #2563eb; color: white; cursor: pointer; }
+.admin-error { color: #f87171; margin-top: 8px; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th, .admin-table td { padding: 10px; border-bottom: 1px solid #334155; text-align: left; }
+.admin-action-btn { margin-right: 6px; padding: 4px 10px; border-radius: 6px; border: none; cursor: pointer; }
+.admin-action-btn--edit { background: #2563eb; color: white; }
+.admin-action-btn--delete { background: #dc2626; color: white; }
+.admin-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
+.admin-modal-content { background: #1e293b; padding: 24px; border-radius: 8px; width: 90%; max-width: 420px; }
+.admin-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
