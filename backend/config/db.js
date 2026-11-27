@@ -14,6 +14,7 @@ const pool = mysql.createPool({
   user: dbUser,
   password: dbPassword,
   database: dbName,
+  charset: 'utf8mb4',
   timezone: 'Z',
   waitForConnections: true,
   connectionLimit: 10,
@@ -33,6 +34,8 @@ async function testConnection() {
   }
 }
 
-testConnection();
+if (process.env.NODE_ENV !== 'test') {
+  testConnection();
+}
 
 module.exports = pool;

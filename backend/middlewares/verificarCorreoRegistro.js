@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const { getRegistroTokenSecret } = require('../utils/authSecrets');
 
 function verificarCorreoRegistro(req, res, next) {
   const { emailUsuario, comprobante } = req.body || {};
-  const secreto = process.env.REGISTRO_TOKEN_SECRET;
+  const secreto = getRegistroTokenSecret();
 
   if (!secreto) {
     return res.status(503).json({ message: 'El registro no está disponible.' });

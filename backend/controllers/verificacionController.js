@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { guardarCodigo, validarYEliminarCodigo } = require('../utils/otpStore');
 const { enviarCorreoCodigo } = require('../utils/emailService');
+const { getRegistroTokenSecret } = require('../utils/authSecrets');
 
 function leerCorreo(body) {
   if (typeof body?.email !== 'string') return '';
@@ -35,7 +36,7 @@ async function verificarCodigo(req, res) {
     return res.status(400).json({ mensaje: 'Revisá el correo y el código de seis dígitos.' });
   }
 
-  const secreto = process.env.REGISTRO_TOKEN_SECRET;
+  const secreto = getRegistroTokenSecret();
   if (!secreto) {
     return res.status(503).json({ mensaje: 'La verificación no está disponible.' });
   }

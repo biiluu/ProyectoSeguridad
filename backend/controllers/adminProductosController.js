@@ -45,13 +45,17 @@ const SELECT_BASE = `
 async function listarProductosAdmin(req, res) {
   try {
     const rawQ = typeof req.query.q === 'string' ? req.query.q.trim().slice(0, 100) : '';
-    let sql = SELECT_BASE;
+    let sql = SELECT_BASE + `
+      WHERE p.id_producto NOT LIKE 'PS%'
+        AND p.id_vendedor <> 'ProductoMediaSlider'
+        AND p.id_categoria <> 'CATS01'
+    `;
     const params = [];
 
     if (rawQ) {
       const escaped = escapeLikePattern(rawQ.toLowerCase());
       const pattern = `%${escaped}%`;
-      sql += " WHERE LOWER(p.titulo_producto) LIKE ? ESCAPE '\\\\' OR LOWER(p.id_vendedor) LIKE ? ESCAPE '\\\\'";
+      sql += " AND (LOWER(p.titulo_producto) LIKE ? ESCAPE '\\\\' OR LOWER(p.id_vendedor) LIKE ? ESCAPE '\\\\')";
       params.push(pattern, pattern);
     }
 
@@ -68,7 +72,13 @@ async function listarProductosAdmin(req, res) {
 // GET: /api/admin/productos/sin-stock
 async function listarProductosSinStock(req, res) {
   try {
-    const sql = SELECT_BASE + ' WHERE COALESCE(vp.stock, 0) <= 0 ORDER BY p.fechaModificacion DESC';
+    const sql = SELECT_BASE + `
+      WHERE p.id_producto NOT LIKE 'PS%'
+        AND p.id_vendedor <> 'ProductoMediaSlider'
+        AND p.id_categoria <> 'CATS01'
+        AND COALESCE(vp.stock, 0) <= 0
+      ORDER BY p.fechaModificacion DESC
+    `;
     const [rows] = await pool.query(sql);
     return res.status(200).json(rows.map(mapProductoAdmin));
   } catch (err) {
