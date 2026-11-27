@@ -22,6 +22,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initTopbarFallback() {
   const userBtn = document.getElementById('topbar-user-btn');
+  const userLabel = document.getElementById('topbar-user-label');
+  const rawUser = localStorage.getItem('user');
+
+  let user = null;
+  try {
+    user = rawUser ? JSON.parse(rawUser) : null;
+  } catch (_) {
+    user = null;
+  }
+
+  if (user && (user.nombreUsuario || user.idUsuario)) {
+    const nombreMostrado = arreglarTexto(user.nombreUsuario || user.idUsuario);
+    if (userLabel) {
+      userLabel.innerHTML = `
+        <span class="user-pill__meta">Sesión activa</span>
+        <span class="user-pill__name-row">
+          <span class="user-pill__name">${escapeHTML(nombreMostrado)}</span>
+        </span>
+      `;
+    }
+    if (userBtn) {
+      userBtn.onclick = async () => {
+        await fetch(`${window.API_URL}/api/usuarios/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        }).catch(() => {});
+        localStorage.removeItem('user');
+        localStorage.removeItem('expiresAtUtc');
+        window.location.reload();
+      };
+    }
+    return;
+  }
+
   if (userBtn) {
     userBtn.onclick = () => {
       window.location.href = 'login.html';
@@ -88,6 +122,7 @@ function initSearch() {
       searchStatus.style.display = 'none';
 
       productos.forEach(p => {
+        const tituloLimpio = arreglarTexto(p.tituloProducto || 'Sin título');
         const li = document.createElement('li');
         li.className = 'topbar__search-item';
 
@@ -96,14 +131,14 @@ function initSearch() {
         img.src = p.fotoBase64
           ? (p.fotoBase64.startsWith('data:') ? p.fotoBase64 : `data:image/jpeg;base64,${p.fotoBase64}`)
           : 'assets/BULOVAWATCH.jpg';
-        img.alt = p.tituloProducto || 'Producto MercaUca';
+        img.alt = tituloLimpio || 'Producto MercaUca';
 
         const info = document.createElement('div');
         info.className = 'topbar__search-info';
 
         const title = document.createElement('span');
         title.className = 'topbar__search-title';
-        title.textContent = p.tituloProducto || 'Sin título';
+        title.textContent = tituloLimpio;
 
         const price = document.createElement('span');
         price.className = 'topbar__search-price';
@@ -141,7 +176,7 @@ async function cargarFiltrosCatalogo() {
     btn.type = 'button';
     btn.className = `catalog-filter-pill${activo ? ' is-active' : ''}`;
     btn.dataset.categoria = idCat;
-    btn.textContent = nombreCat;
+    btn.textContent = arreglarTexto(nombreCat);
     btn.addEventListener('click', () => {
       categoriaActiva = idCat;
       container.querySelectorAll('.catalog-filter-pill').forEach(el => {
@@ -200,6 +235,8 @@ async function cargarCatalogo(categoria = categoriaActiva) {
 
     productos.forEach((p, idx) => {
       const id = p.idProducto;
+      const tituloLimpio = arreglarTexto(p.tituloProducto || 'Sin título');
+      const categoriaLimpia = arreglarTexto(p.nombreCategoria || '✓ MercaUca');
       const imgSrc = p.fotoBase64
         ? (p.fotoBase64.startsWith('data:') ? p.fotoBase64 : `data:image/jpeg;base64,${p.fotoBase64}`)
         : 'assets/BULOVAWATCH.jpg';
@@ -215,7 +252,7 @@ async function cargarCatalogo(categoria = categoriaActiva) {
       const link = document.createElement('a');
       link.href = `producto.html?id=${encodeURIComponent(id)}`;
       link.className = 'producto__link';
-      link.setAttribute('aria-label', `Ver detalle: ${p.tituloProducto || ''} ${agotado ? '(Agotado)' : ''}`);
+      link.setAttribute('aria-label', `Ver detalle: ${tituloLimpio} ${agotado ? '(Agotado)' : ''}`);
 
       const imgWrap = document.createElement('div');
       imgWrap.className = 'producto__image-wrap';
@@ -223,12 +260,12 @@ async function cargarCatalogo(categoria = categoriaActiva) {
       const img = document.createElement('img');
       img.className = 'producto__imagen';
       img.src = imgSrc;
-      img.alt = p.tituloProducto || 'Producto MercaUca';
+      img.alt = tituloLimpio || 'Producto MercaUca';
       img.loading = 'lazy';
 
       const badge = document.createElement('span');
       badge.className = agotado ? 'producto__badge producto__badge--agotado' : 'producto__badge';
-      badge.textContent = agotado ? 'Agotado' : (p.nombreCategoria || '✓ MercaUca');
+      badge.textContent = agotado ? 'Agotado' : categoriaLimpia;
 
       imgWrap.appendChild(img);
       imgWrap.appendChild(badge);
@@ -258,7 +295,7 @@ async function cargarCatalogo(categoria = categoriaActiva) {
 
       const title = document.createElement('h3');
       title.className = 'producto__nombre';
-      title.textContent = p.tituloProducto || 'Sin título';
+      title.textContent = tituloLimpio;
 
       const footer = document.createElement('div');
       footer.className = 'producto__footer';
@@ -305,4 +342,32 @@ async function cargarCatalogo(categoria = categoriaActiva) {
       loading.innerHTML = '<p class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #DC2626; font-weight: 600;">No se pudo conectar con el catálogo. Asegúrate de que el backend esté activo.</p>';
     }
   }
+}
+
+function arreglarTexto(texto) {
+  if (typeof texto !== 'string') return texto;
+
+  // Intenta decodificar doble UTF-8 (ej. "ElectrÃ³nica" -> "Electrónica")
+  try {
+    const bytes = Uint8Array.from([...texto].map(ch => ch.charCodeAt(0) & 0xff));
+    const decoded = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+    if (decoded && !decoded.includes('\ufffd')) {
+      return decoded;
+    }
+  } catch (_) {}
+
+  // Respaldo directo para secuencias comunes de mojibake
+  return texto
+    .replace(/Ã¡/g, 'á')
+    .replace(/Ã©/g, 'é')
+    .replace(/Ã­/g, 'í')
+    .replace(/Ã³/g, 'ó')
+    .replace(/Ãº/g, 'ú')
+    .replace(/Ã±/g, 'ñ')
+    .replace(/Ã/g, 'Á')
+    .replace(/Ã‰/g, 'É')
+    .replace(/Ã/g, 'Í')
+    .replace(/Ã“/g, 'Ó')
+    .replace(/Ãš/g, 'Ú')
+    .replace(/Ã‘/g, 'Ñ');
 }
