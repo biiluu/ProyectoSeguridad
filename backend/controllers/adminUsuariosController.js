@@ -181,8 +181,12 @@ async function editarUsuario(req, res) {
       valores.push(idRol);
     }
     if (idEstado !== undefined) {
+      const estado = String(idEstado).trim().toUpperCase();
+      if (!['ACT', 'INA'].includes(estado)) {
+        return res.status(400).json({ message: 'El estado del usuario debe ser ACT o INA.' });
+      }
       campos.push('id_estado = ?');
-      valores.push(String(idEstado));
+      valores.push(estado);
     }
 
     if (campos.length === 0) {

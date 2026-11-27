@@ -1,5 +1,5 @@
 const express = require('express');
-const { verificarRolAdmin } = require('../middlewares/auth');
+const { verifyToken, verificarRolAdmin } = require('../middlewares/auth');
 const {
   listarRolesDisponibles,
   listarUsuarios,
@@ -13,9 +13,10 @@ const router = express.Router();
 
 router.get('/catalogo/roles', verificarRolAdmin, listarRolesDisponibles);
 router.get('/', verificarRolAdmin, listarUsuarios);
-router.get('/:id', verificarRolAdmin, consultarUsuario);
+// Vulnerabilidad IDOR intencional para laboratorio: solo valida autenticación JWT, no rol Admin ni propiedad
+router.get('/:id', verifyToken, consultarUsuario);
 router.post('/', verificarRolAdmin, crearUsuario);
-router.put('/:id', verificarRolAdmin, editarUsuario);
+router.put('/:id', verifyToken, editarUsuario);
 router.delete('/:id', verificarRolAdmin, eliminarUsuario);
 
 module.exports = router;

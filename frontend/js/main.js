@@ -24,7 +24,7 @@ function initTopbarFallback() {
   const userBtn = document.getElementById('topbar-user-btn');
   if (userBtn) {
     userBtn.onclick = () => {
-      window.location.href = 'registro.html';
+      window.location.href = 'login.html';
     };
   }
 }

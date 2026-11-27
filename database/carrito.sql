@@ -1,7 +1,9 @@
 -- Tabla del carrito de cada comprador.
--- Tomada de mercauca_mysql.sql del proyecto original.
+-- Tomada de mercauca_mysql.sql del proyecto original (idempotente).
 
-CREATE TABLE `carrito` (
+USE `mercauca`;
+
+CREATE TABLE IF NOT EXISTS `carrito` (
   `id_carrito` varchar(60) NOT NULL,
   `id_comprador` varchar(50) NOT NULL,
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,9 +19,9 @@ CREATE TABLE `carrito` (
 
 
 -- Productos que contiene cada carrito.
--- Tomada de mercauca_mysql.sql del proyecto original.
+-- Tomada de mercauca_mysql.sql del proyecto original (idempotente).
 
-CREATE TABLE `articulos_carrito` (
+CREATE TABLE IF NOT EXISTS `articulos_carrito` (
   `id_articulos_carrito` varchar(60) NOT NULL,
   `id_carrito` varchar(60) NOT NULL,
   `id_producto_variante` varchar(50) NOT NULL,
@@ -41,10 +43,15 @@ CREATE TABLE `articulos_carrito` (
 
 
 -- Datos de prueba tomados del proyecto original.
--- Requieren que ya existan el usuario U001 y la variante PB01.
+-- Solo se insertan si U001 y PB01 ya existen, evitando errores por orden de ejecución.
 
-INSERT INTO `carrito`
-VALUES ('CR-U001', 'U001', '2026-11-08 20:41:34', '2026-11-08 20:41:34');
+INSERT IGNORE INTO `carrito` (`id_carrito`, `id_comprador`, `fechaCreacion`, `fechaModificacion`)
+SELECT 'CR-U001', u.`id_usuario`, '2026-11-08 20:41:34', '2026-11-08 20:41:34'
+FROM `usuario` u
+WHERE u.`id_usuario` = 'U001';
 
-INSERT INTO `articulos_carrito`
-VALUES ('AC-001', 'CR-U001', 'PB01', 1, 215.5, '$');
+INSERT IGNORE INTO `articulos_carrito` (`id_articulos_carrito`, `id_carrito`, `id_producto_variante`, `cantidad`, `precio`, `moneda`)
+SELECT 'AC-001', c.`id_carrito`, vp.`id_producto_variante`, 1, 215.5, '$'
+FROM `carrito` c
+INNER JOIN `variantes_productos` vp ON vp.`id_producto_variante` = 'PB01'
+WHERE c.`id_carrito` = 'CR-U001';

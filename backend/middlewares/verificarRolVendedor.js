@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { getRolesMap } = require('../utils/rolesHelper');
+const { getJwtSecret } = require('../utils/authSecrets');
 
 /**
  * Extrae el token JWT priorizando la Cookie HttpOnly `token`
@@ -49,7 +50,7 @@ async function verificarRolVendedor(req, res, next) {
     return res.status(401).json({ message: 'Acceso no autorizado. Token no proporcionado.' });
   }
 
-  const jwtSecret = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'secret');
+  const jwtSecret = getJwtSecret();
   if (!jwtSecret) {
     return res.status(503).json({ message: 'Configuración de autenticación no disponible en el servidor.' });
   }

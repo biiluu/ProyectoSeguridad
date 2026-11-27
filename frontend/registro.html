@@ -446,6 +446,9 @@
 
           closeModal();
           window.showToast('¡Cuenta creada y verificada exitosamente! 🎉', 'success');
+          setTimeout(() => {
+            window.location.href = 'login.html?motivo=registro_exitoso';
+          }, 900);
 
         } catch (err) {
           console.error(err);

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/">
+  <title>404 - Página no encontrada | MercaUca</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/topbar.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <style>
+    .error-page {
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background: radial-gradient(circle at 50% 30%, #1e293b 0%, #0b1322 100%);
+    }
+    .error-card {
+      max-width: 640px;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(197, 164, 109, 0.25);
+      border-radius: 20px;
+      padding: 48px 36px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+    .error-code {
+      font-size: clamp(4.5rem, 12vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #C5A46D 20%, #F59E0B 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .error-icon { font-size: 3rem; margin-bottom: 12px; display: inline-block; }
+    .error-title { font-size: clamp(1.4rem, 4vw, 1.8rem); color: #F8FAFC; font-weight: 700; margin-bottom: 12px; }
+    .error-desc { color: #94A3B8; font-size: 1.05rem; line-height: 1.6; margin-bottom: 32px; }
+    .error-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .btn-error-primary {
+      display: inline-flex; align-items: center; gap: 8px; background: #C5A46D; color: #0F172A;
+      font-weight: 700; padding: 12px 28px; border-radius: 12px; text-decoration: none; font-size: 1rem;
+    }
+    .btn-error-secondary {
+      display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.06);
+      color: #E2E8F0; border: 1px solid rgba(255, 255, 255, 0.15); font-weight: 600;
+      padding: 12px 24px; border-radius: 12px; text-decoration: none; font-size: 1rem;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <header id="topbar">
+    <div class="topbar__wrap">
+      <a href="/index.html" class="topbar__brand"><span>🛍️</span> MERCAUCA</a>
+      <a href="/index.html" style="color: var(--secundario, #C5A46D); font-size: 0.95rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+        <span>🏠</span> Volver a la Tienda
+      </a>
+    </div>
+  </header>
+
+  <main class="error-page">
+    <div class="error-card">
+      <div class="error-icon">🧭</div>
+      <div class="error-code">404</div>
+      <h1 class="error-title">Página no encontrada</h1>
+      <p class="error-desc">
+        Lo sentimos, la dirección a la que intentas acceder no existe, ha sido trasladada o el enlace ingresado es incorrecto.
+      </p>
+      <div class="error-actions">
+        <a href="/index.html" class="btn-error-primary"><span>🛍️</span> Ir a la Tienda Principal</a>
+        <a href="/login.html" class="btn-error-secondary"><span>🔐</span> Iniciar Sesión</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+</body>
+</html>

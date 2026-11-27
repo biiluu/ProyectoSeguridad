@@ -60,15 +60,16 @@ const cart = {
     const user = obtenerUsuarioCarrito();
     if (!user) return;
 
-    const listContainer = document.getElementById('cart-items-container');
-    const emptyNotice = document.getElementById('cart-empty-notice');
-    const subtotalEl = document.getElementById('cart-subtotal');
-    const totalEl = document.getElementById('cart-total');
-    const shippingEl = document.getElementById('cart-shipping');
-    const checkoutBtn = document.getElementById('cart-checkout-btn');
-
     try {
       const res = await window.api.get(`/api/Carrito/${encodeURIComponent(user.idUsuario)}`);
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('expiresAtUtc');
+        this.close();
+        window.location.href = 'login.html?motivo=token_expirado';
+        return;
+      }
       if (!res.ok) {
         this.products = [];
       } else {
@@ -261,6 +262,13 @@ const cart = {
       };
 
       const res = await window.api.post('/api/Carrito/agregar-articulo', payload);
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('expiresAtUtc');
+        window.location.href = 'login.html?motivo=token_expirado';
+        return false;
+      }
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {

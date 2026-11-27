@@ -4,63 +4,99 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MercaUca — Administración de Productos</title>
+  <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
 </head>
-<body>
-  <div class="admin-wrap">
-    <header class="admin-header">
-      <h1>Administración de Productos</h1>
-      <a href="index.html" class="admin-link-back">Volver al sitio</a>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__brand">
+      <a href="admin.html" class="admin-sidebar__logo"><span>MERCAUCA</span></a>
+    </div>
+    <nav class="admin-sidebar__nav">
+      <a href="admin.html" class="admin-nav-item"><span class="admin-nav-item__icon">📊</span><span>Dashboard</span></a>
+      <a href="admin-usuarios.html" class="admin-nav-item"><span class="admin-nav-item__icon">👥</span><span>Usuarios y Roles</span></a>
+      <a href="admin-productos.html" class="admin-nav-item active"><span class="admin-nav-item__icon">📦</span><span>Catálogo &amp; Stock</span></a>
+      <a href="admin-ordenes.html" class="admin-nav-item"><span class="admin-nav-item__icon">🧾</span><span>Ventas y Órdenes</span></a>
+    </nav>
+    <div class="admin-sidebar__footer">
+      <div class="admin-user-pill">
+        <div id="sidebar-admin-avatar" class="admin-user-avatar">A</div>
+        <div class="admin-user-details">
+          <strong id="sidebar-admin-name">Administrador</strong>
+          <span id="sidebar-admin-role">ADMINISTRADOR</span>
+        </div>
+      </div>
+      <a href="index.html" class="btn-topbar" style="justify-content: center; background: #27272A; color: #FFFFFF; border: none;"><span>🏪</span> Ir a Tienda</a>
+      <button type="button" onclick="window.auth.logout()" class="btn-topbar btn-topbar--danger" style="justify-content: center;"><span>🚪</span> Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <div class="admin-wrapper">
+    <header class="admin-topbar">
+      <div class="admin-topbar__title">
+        <h1>Administración de Productos</h1>
+        <p>Control de catálogo publicado, precios y existencias en inventario</p>
+      </div>
+      <div class="admin-topbar__actions">
+        <a href="admin-usuarios.html" class="btn-topbar">👥 Usuarios</a>
+        <a href="index.html" class="btn-topbar">🏪 Ir a Tienda</a>
+      </div>
     </header>
 
-    <div id="no-login-view" style="display:none;" class="admin-aviso">
-      Debes iniciar sesión para ver esta sección. <a href="login.html">Iniciar sesión</a>
-    </div>
-
-    <div id="no-admin-view" style="display:none;" class="admin-aviso">
-      Acceso denegado: esta sección es solo para administradores.
-    </div>
-
-    <div id="admin-productos-panel" style="display:none;">
-      <section class="admin-table-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h2>Productos</h2>
-          <label><input type="checkbox" id="ap-filtro-sin-stock" /> Mostrar solo sin existencias</label>
-        </div>
-        <table class="admin-table">
-          <thead>
-            <tr><th>ID</th><th>Producto</th><th>Vendedor</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
-          </thead>
-          <tbody id="ap-tbody"></tbody>
-        </table>
-      </section>
-    </div>
-
-    <div id="modal-editar-producto" class="admin-modal" style="display:none;">
-      <div class="admin-modal-content">
-        <h2>Editar producto</h2>
-        <form id="form-editar-producto" class="admin-form" enctype="multipart/form-data">
-          <input type="hidden" id="ep-id" />
-          <input type="text" id="ep-titulo" placeholder="Título" />
-          <input type="text" id="ep-marca" placeholder="Marca" />
-          <select id="ep-categoria"></select>
-          <select id="ep-condicion"></select>
-          <input type="number" step="0.01" id="ep-precio" placeholder="Precio" />
-          <input type="number" id="ep-stock" placeholder="Stock" />
-          <textarea id="ep-descripcion" placeholder="Descripción"></textarea>
-          <input type="file" id="ep-imagen" accept="image/jpeg,image/png,image/webp" />
-          <div class="admin-modal-actions">
-            <button type="button" id="ep-cancelar">Cancelar</button>
-            <button type="submit">Guardar cambios</button>
-          </div>
-        </form>
-        <p id="ep-error" class="admin-error" style="display:none;"></p>
+    <main class="admin-page-content">
+      <div id="no-login-view" style="display:none;" class="admin-aviso">
+        Debes iniciar sesión para ver esta sección. <a href="login.html?redirect=admin-productos.html&motivo=no_autenticado">Iniciar sesión</a>
       </div>
-    </div>
+
+      <div id="no-admin-view" style="display:none;" class="admin-aviso">
+        Acceso denegado: esta sección es solo para administradores.
+      </div>
+
+      <div id="admin-productos-panel" style="display:none;">
+        <section class="admin-table-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h2>Productos</h2>
+            <label style="font-size:0.88rem; font-weight:600; color:#334155;"><input type="checkbox" id="ap-filtro-sin-stock" /> Mostrar solo sin existencias</label>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr><th>ID</th><th>Producto</th><th>Vendedor</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
+              </thead>
+              <tbody id="ap-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div id="modal-editar-producto" class="admin-modal" style="display:none;">
+        <div class="admin-modal-content">
+          <h2>Editar producto</h2>
+          <form id="form-editar-producto" class="admin-form" enctype="multipart/form-data">
+            <input type="hidden" id="ep-id" />
+            <input type="text" id="ep-titulo" placeholder="Título" />
+            <input type="text" id="ep-marca" placeholder="Marca" />
+            <select id="ep-categoria"></select>
+            <select id="ep-condicion"></select>
+            <input type="number" step="0.01" id="ep-precio" placeholder="Precio" />
+            <input type="number" id="ep-stock" placeholder="Stock" />
+            <textarea id="ep-descripcion" placeholder="Descripción"></textarea>
+            <input type="file" id="ep-imagen" accept="image/jpeg,image/png,image/webp" />
+            <div class="admin-modal-actions">
+              <button type="button" id="ep-cancelar">Cancelar</button>
+              <button type="submit">Guardar cambios</button>
+            </div>
+          </form>
+          <p id="ep-error" class="admin-error" style="display:none;"></p>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <script>window.API_URL = '';</script>
+  <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/admin-productos.js"></script>
 </body>
 </html>

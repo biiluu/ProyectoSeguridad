@@ -1,8 +1,11 @@
 window.sesionLogin = {
   setSession(data) {
-    // Asegurar que ningún token JWT quede jamás expuesto en localStorage
+    if (window.auth && typeof window.auth.setSession === 'function') {
+      window.auth.setSession(data);
+      return;
+    }
     localStorage.removeItem('token');
-    if (data.expiresAtUtc) localStorage.setItem('expiresAtUtc', data.expiresAtUtc);
-    if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+    if (data && data.expiresAtUtc) localStorage.setItem('expiresAtUtc', data.expiresAtUtc);
+    if (data && data.user) localStorage.setItem('user', JSON.stringify(data.user));
   }
 };
