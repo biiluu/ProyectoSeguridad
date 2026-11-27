@@ -80,6 +80,7 @@
 
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/sesionLogin.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -92,21 +93,36 @@
       const motivo = urlParams.get('motivo');
       const redirectTarget = urlParams.get('redirect');
 
+      const flashSuccess = sessionStorage.getItem('flashSuccess');
+      const flashError = sessionStorage.getItem('flashError');
+      const flashInfo = sessionStorage.getItem('flashInfo');
+      sessionStorage.removeItem('flashSuccess');
+      sessionStorage.removeItem('flashError');
+      sessionStorage.removeItem('flashInfo');
+
       if (motivo === 'no_autenticado') {
         feedback.className = 'auth-feedback auth-feedback--error';
-        feedback.textContent = '🔒 Debes iniciar sesión con tu cuenta para acceder a esa sección.';
+        feedback.textContent = flashInfo || flashError || '🔒 Debes iniciar sesión con tu cuenta para acceder a esa sección.';
         feedback.style.display = 'block';
       } else if (motivo === 'denegado_admin') {
         feedback.className = 'auth-feedback auth-feedback--error';
-        feedback.textContent = '⛔ Acceso denegado: No tienes permisos para acceder a esta sección.';
+        feedback.textContent = flashError || '⛔ Acceso denegado: No tienes permisos para acceder a esta sección.';
         feedback.style.display = 'block';
       } else if (motivo === 'logout') {
         feedback.className = 'auth-feedback auth-feedback--success';
-        feedback.textContent = '✔ Tu sesión ha sido cerrada correctamente.';
+        feedback.textContent = flashSuccess || '✔ Tu sesión ha sido cerrada correctamente.';
+        feedback.style.display = 'block';
+      } else if (motivo === 'registro_exitoso') {
+        feedback.className = 'auth-feedback auth-feedback--success';
+        feedback.textContent = '✔ Cuenta creada y verificada. Ingresa tus credenciales para iniciar sesión.';
         feedback.style.display = 'block';
       } else if (motivo === 'token_expirado') {
         feedback.className = 'auth-feedback auth-feedback--error';
         feedback.textContent = 'Tu sesión anterior expiró. Por favor ingresa tus credenciales nuevamente.';
+        feedback.style.display = 'block';
+      } else if (flashSuccess || flashError || flashInfo) {
+        feedback.className = `auth-feedback ${flashError ? 'auth-feedback--error' : 'auth-feedback--success'}`;
+        feedback.textContent = flashError || flashSuccess || flashInfo;
         feedback.style.display = 'block';
       }
 
@@ -157,7 +173,18 @@
             feedback.style.display = 'block';
 
             setTimeout(() => {
-              if (['index.html', 'admin.html', 'vender.html'].includes(redirectTarget)) {
+              const allowedPages = new Set([
+                'index.html',
+                'admin.html',
+                'admin-usuarios.html',
+                'admin-productos.html',
+                'admin-ordenes.html',
+                'vender.html',
+                'mis-productos.html',
+                'producto.html'
+              ]);
+              const targetBase = String(redirectTarget || '').split('?')[0];
+              if (allowedPages.has(targetBase)) {
                 window.location.href = redirectTarget;
               } else if (data.user && String(data.user.nombreRol || '').trim().toLowerCase() === 'administrador') {
                 window.location.href = 'admin.html';

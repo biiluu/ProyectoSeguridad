@@ -25,20 +25,8 @@ function createTransporter() {
 }
 
 async function enviarCorreoCodigo(destino, codigo) {
-  const { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM } = process.env;
-  const port = Number(process.env.SMTP_PORT || 587);
-
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-    throw new Error('Falta configurar el servicio de correo.');
-  }
-
-  const transport = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port,
-    secure: port === 465,
-    requireTLS: port !== 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS }
-  });
+  const { SMTP_USER, SMTP_FROM } = process.env;
+  const transport = createTransporter();
 
   await transport.sendMail({
     from: SMTP_FROM || SMTP_USER,

@@ -18,7 +18,8 @@ services:
     volumes:
       # Volumen para que los datos persistan de por vida en Docker
       - proyectoseguridad_mysql_data:/var/lib/mysql
-      # Script de inicialización que crea tablas y datos iniciales en el primer inicio
+      # Script de inicialización idempotente que crea todas las tablas y datos iniciales
+      - ./database/mercauca_init.sql:/docker-entrypoint-initdb.d/01-mercauca-init.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 10s

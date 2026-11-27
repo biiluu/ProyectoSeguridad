@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/nav.css">
   <link rel="stylesheet" href="css/vender.css">
   <link rel="stylesheet" href="css/mis-productos.css">
+  <link rel="stylesheet" href="css/cart.css">
   <link rel="stylesheet" href="css/footer.css">
   <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -20,6 +21,10 @@
       <a href="index.html" class="topbar__brand"><span>🛍️</span> MERCAUCA</a>
       <div style="flex:1;"></div>
       <div class="topbar__actions">
+        <button id="cart-open-btn" type="button" class="icon-btn" aria-label="Abrir carrito" onclick="cart.open()">
+          🛒
+          <span id="cart-badge" class="badge">0</span>
+        </button>
         <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
           <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
             <svg viewBox="0 0 24 24" width="21" height="21">
@@ -242,6 +247,54 @@
     </div>
   </div>
 
+  <!-- ================= DRAWER DEL CARRITO ================= -->
+  <div id="cart-backdrop" class="cart-backdrop" onclick="cart.close()">
+    <div class="cart-drawer" onclick="event.stopPropagation()">
+      <div class="cart-header">
+        <div class="cart-header__brand">
+          <div>
+            <h2 class="cart-title">Mi Carrito</h2>
+            <div id="cart-header-count" class="cart-header__sub">Sin artículos seleccionados</div>
+          </div>
+        </div>
+        <button class="cart-close-btn" onclick="cart.close()" aria-label="Cerrar carrito">✕</button>
+      </div>
+      <div class="cart-body">
+        <div id="cart-empty-notice" class="cart-empty">
+          <div class="cart-empty-title">Tu carrito está vacío</div>
+          <p class="cart-empty-desc">Explora nuestro catálogo y agrega tus artículos favoritos para realizar tu pedido.</p>
+          <button type="button" class="cart-empty-cta" onclick="cart.close()">Explorar productos →</button>
+        </div>
+        <div id="cart-items-container" class="cart-items"></div>
+        <div class="cart-shipping-block" style="display: none;">
+          <h3 class="cart-shipping-title">Método de entrega</h3>
+          <label class="shipping-option selected" id="opt-shipping-store">
+            <input type="radio" name="shipping" value="store" checked onchange="cart.setShippingMode('store')" class="shipping-radio">
+            <div class="shipping-info">
+              <div class="shipping-main">Retirar en campus UCA</div>
+              <div class="shipping-sub">Listo en 20 min · Punto de encuentro seguro</div>
+            </div>
+            <span class="shipping-badge">Gratis</span>
+          </label>
+          <label class="shipping-option" id="opt-shipping-home">
+            <input type="radio" name="shipping" value="home" onchange="cart.setShippingMode('home')" class="shipping-radio">
+            <div class="shipping-info">
+              <div class="shipping-main">Envío a domicilio</div>
+              <div class="shipping-sub">Entrega de 2 a 4 días hábiles</div>
+            </div>
+            <span class="shipping-badge shipping-badge--paid">$9.90</span>
+          </label>
+        </div>
+      </div>
+      <div class="cart-footer">
+        <div class="summary-row"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+        <div class="summary-row"><span>Envío estimado</span><span id="cart-shipping">Gratis</span></div>
+        <div class="summary-row summary-row-total"><span>Total a pagar</span><span id="cart-total" class="summary-total-amount">$0.00</span></div>
+        <button id="cart-checkout-btn" class="checkout-btn" onclick="cart.promptCheckout()"><span>Finalizar pedido</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= FOOTER ================= -->
   <footer class="footer-mercauca">
     <div class="footer-inner">
@@ -253,6 +306,8 @@
 
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
   <script src="js/mis-productos.js"></script>
 </body>
 </html>

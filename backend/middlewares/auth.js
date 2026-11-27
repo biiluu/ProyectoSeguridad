@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { getRolesMap } = require('../utils/rolesHelper');
+const { getJwtSecret } = require('../utils/authSecrets');
 
 /**
  * Extrae el token JWT priorizando la Cookie HttpOnly (token=<jwt>)
@@ -44,8 +45,13 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ message: 'Acceso no autorizado. Token no proporcionado.' });
   }
 
+  const jwtSecret = getJwtSecret();
+  if (!jwtSecret) {
+    return res.status(503).json({ message: 'Configuración de autenticación no disponible en el servidor.' });
+  }
+
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded; // { sub, unique_name, nombre, rol, email, ... }
     next();
   } catch (err) {

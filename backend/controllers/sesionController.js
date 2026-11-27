@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { getJwtSecret } = require('../utils/authSecrets');
 
 const intentosLogin = new Map();
 
@@ -14,7 +15,7 @@ setInterval(() => {
       intentosLogin.delete(key);
     }
   }
-}, 30 * 60 * 1000);
+}, 30 * 60 * 1000).unref();
 
 function buildAuthCookieOptions(req, includeMaxAge = true) {
   const isHttpsRequest = Boolean(
@@ -125,7 +126,12 @@ async function login(req, res) {
       email: user.email_usuario
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const jwtSecret = getJwtSecret();
+    if (!jwtSecret) {
+      return res.status(503).json({ message: 'Configuración de autenticación no disponible en el servidor.' });
+    }
+
+    const token = jwt.sign(payload, jwtSecret, {
       expiresIn: process.env.JWT_EXPIRES_IN || '60m'
     });
 
