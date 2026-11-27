@@ -14,6 +14,7 @@ const pool = mysql.createPool({
   user: dbUser,
   password: dbPassword,
   database: dbName,
+  charset: 'utf8mb4',
   timezone: 'Z',
   waitForConnections: true,
   connectionLimit: 10,
