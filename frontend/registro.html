@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Cuenta - MercaUca</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+  <!-- Topbar mínimo -->
+  <header id="topbar">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand">
+        <span>🛍️</span> MERCAUCA
+      </a>
+      <a href="index.html"
+        style="font-family: var(--fuentePrincipal); letter-spacing: 0.06em; color: var(--secundario); font-size: 1.05rem; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(197, 164, 109, 0.35); background: rgba(255, 255, 255, 0.04);">
+        <span>←</span> VOLVER AL INICIO
+      </a>
+    </div>
+  </header>
+
+  <main class="login-container">
+    <div class="login-box login-box--wide">
+      <div class="login-header">
+        <div class="login-badge">🎓 Comunidad UCA</div>
+        <h1 class="login-title">Crear Cuenta</h1>
+        <p class="login-subtitle">Únete a la plataforma oficial de compra y venta de la UCA</p>
+      </div>
+
+      <form id="registro-form" class="login-form">
+        <!-- Fila 1: Nombre y Usuario -->
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="input-label" for="reg-nombre">Nombre completo *</label>
+            <input type="text" id="reg-nombre" class="input-control" placeholder="Ej. Juan Pérez" required
+              autocomplete="name">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="reg-usuario">Usuario (único) *</label>
+            <input type="text" id="reg-usuario" class="input-control" placeholder="Ej. jperez26" required
+              autocomplete="username">
+          </div>
+        </div>
+
+        <!-- Fila 2: Correo y Teléfono -->
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="input-label" for="reg-correo">Correo electrónico *</label>
+            <input type="email" id="reg-correo" class="input-control" placeholder="nombre.apellido@uca.edu.sv" required
+              autocomplete="email" maxlength="100">
+            <span id="err-correo" class="field-error"></span>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="reg-telefono">
+              <span>Número de teléfono *</span>
+              <span class="input-hint">8 dígitos</span>
+            </label>
+            <input type="tel" id="reg-telefono" class="input-control" placeholder="Ej. 7777-8888" inputmode="numeric"
+              maxlength="9" required>
+            <span id="err-telefono" class="field-error"></span>
+          </div>
+        </div>
+
+        <!-- Fila 3: Contraseña con Toggle -->
+        <div class="input-group">
+          <label class="input-label" for="reg-password">
+            <span>Contraseña *</span>
+            <span class="input-hint">Mínimo 6 caracteres</span>
+          </label>
+          <div class="password-wrapper">
+            <input type="password" id="reg-password" class="input-control" placeholder="••••••••" required
+              autocomplete="new-password" minlength="6">
+            <button type="button" id="btn-toggle-pwd" class="password-toggle-btn" title="Mostrar u ocultar contraseña"
+              aria-label="Mostrar u ocultar contraseña">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="reg-submit-btn" class="btn-53">
+          Continuar y Verificar Correo ➔
+        </button>
+
+        <div id="reg-feedback" class="auth-feedback" style="display: none;"></div>
+      </form>
+
+      <div class="register-section">
+        <p>¿Ya tienes una cuenta registrada?</p>
+        <button type="button" class="btn-register" onclick="window.location.href='login.html'">
+          Iniciar sesión aquí
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= MODAL VERIFICACIÓN CÓDIGO OTP ================= -->
+  <div id="otp-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true"
+    aria-labelledby="otp-title">
+    <div class="modal-card" id="otp-card">
+      <button type="button" class="modal-close-btn" id="btn-close-otp-x" title="Cerrar modal"
+        aria-label="Cerrar">✕</button>
+
+      <div class="otp-badge-icon">✉️</div>
+
+      <h3 class="modal-title" id="otp-title">Verifica tu correo</h3>
+      <p class="modal-text">
+        Ingresa el código de 6 dígitos que enviamos a:<br>
+        <span id="otp-target-email" class="otp-email-highlight"></span>
+      </p>
+
+      <input type="text" id="otp-input" class="modal-input-otp" placeholder="••••••" maxlength="6" inputmode="numeric"
+        pattern="[0-9]*" autocomplete="one-time-code" autofocus>
+
+      <div id="otp-error" class="auth-feedback auth-feedback--error" style="display: none; margin-bottom: 1rem;"></div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-otp" class="btn-modal-secondary">Cancelar</button>
+        <button type="button" id="btn-verify-otp" class="btn-modal-primary">Confirmar Código</button>
+      </div>
+
+      <div>
+        <button type="button" id="btn-resend-otp" class="modal-resend">
+          🔄 ¿No recibiste el código? Reenviar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('registro-form');
+      const feedback = document.getElementById('reg-feedback');
+      const submitBtn = document.getElementById('reg-submit-btn');
+
+      // Toggle mostrar contraseña
+      const pwdInput = document.getElementById('reg-password');
+      const btnTogglePwd = document.getElementById('btn-toggle-pwd');
+      btnTogglePwd.addEventListener('click', () => {
+        if (pwdInput.type === 'password') {
+          pwdInput.type = 'text';
+          btnTogglePwd.textContent = '🙈';
+        } else {
+          pwdInput.type = 'password';
+          btnTogglePwd.textContent = '👁️';
+        }
+      });
+
+      // Elementos del Modal OTP
+      const otpModal = document.getElementById('otp-modal');
+      const otpCard = document.getElementById('otp-card');
+      const otpInput = document.getElementById('otp-input');
+      const otpError = document.getElementById('otp-error');
+      const btnVerifyOtp = document.getElementById('btn-verify-otp');
+      const btnCancelOtp = document.getElementById('btn-cancel-otp');
+      const btnCloseOtpX = document.getElementById('btn-close-otp-x');
+      const btnResendOtp = document.getElementById('btn-resend-otp');
+
+      let formDataPendiente = null;
+      let resendTimer = null;
+      let countdown = 30;
+
+      function startResendCountdown() {
+        clearInterval(resendTimer);
+        countdown = 30;
+        btnResendOtp.disabled = true;
+        btnResendOtp.textContent = `⏳ Reenviar código en ${countdown}s`;
+
+        resendTimer = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            btnResendOtp.textContent = `⏳ Reenviar código en ${countdown}s`;
+          } else {
+            clearInterval(resendTimer);
+            btnResendOtp.disabled = false;
+            btnResendOtp.textContent = '🔄 ¿No recibiste el código? Reenviar';
+          }
+        }, 1000);
+      }
+
+      function triggerShake() {
+        otpCard.classList.remove('shake');
+        void otpCard.offsetWidth; // Forzar reflujo
+        otpCard.classList.add('shake');
+      }
+
+      // Restricción del input OTP: solo dígitos numéricos
+      otpInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        if (e.target.value.length === 6) {
+          // Si completó los 6 dígitos, limpiar error
+          otpError.style.display = 'none';
+        }
+      });
+
+      // Permitir enviar con Enter desde el input de OTP
+      otpInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          btnVerifyOtp.click();
+        }
+      });
+
+      function closeModal() {
+        otpModal.style.display = 'none';
+        clearInterval(resendTimer);
+      }
+
+      btnCancelOtp.onclick = closeModal;
+      btnCloseOtpX.onclick = closeModal;
+      otpModal.onclick = (e) => {
+        if (e.target === otpModal) closeModal();
+      };
+
+      // Validación en tiempo real: Correo electrónico y Número de teléfono
+      const correoInput = document.getElementById('reg-correo');
+      const telInput = document.getElementById('reg-telefono');
+      const errCorreo = document.getElementById('err-correo');
+      const errTel = document.getElementById('err-telefono');
+
+      const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const TEL_REGEX = /^[267]\d{3}-\d{4}$/;
+
+      function validarCorreo(mostrarVacio = false) {
+        const val = correoInput.value.trim();
+        if (!val) {
+          correoInput.classList.remove('is-valid');
+          if (mostrarVacio) {
+            correoInput.classList.add('is-invalid');
+            errCorreo.textContent = 'El correo electrónico es obligatorio.';
+            errCorreo.style.display = 'block';
+          } else {
+            correoInput.classList.remove('is-invalid');
+            errCorreo.style.display = 'none';
+          }
+          return false;
+        }
+        if (!EMAIL_REGEX.test(val)) {
+          correoInput.classList.remove('is-valid');
+          correoInput.classList.add('is-invalid');
+          errCorreo.textContent = 'Ingresa un correo válido (ej. nombre@uca.edu.sv).';
+          errCorreo.style.display = 'block';
+          return false;
+        }
+        correoInput.classList.remove('is-invalid');
+        correoInput.classList.add('is-valid');
+        errCorreo.style.display = 'none';
+        return true;
+      }
+
+      function validarTelefono(mostrarVacio = false) {
+        const val = telInput.value.trim();
+        if (!val) {
+          telInput.classList.remove('is-valid');
+          if (mostrarVacio) {
+            telInput.classList.add('is-invalid');
+            errTel.textContent = 'El número de teléfono es obligatorio.';
+            errTel.style.display = 'block';
+          } else {
+            telInput.classList.remove('is-invalid');
+            errTel.style.display = 'none';
+          }
+          return false;
+        }
+        if (!TEL_REGEX.test(val)) {
+          telInput.classList.remove('is-valid');
+          telInput.classList.add('is-invalid');
+          errTel.textContent = 'Debe tener 8 dígitos e iniciar con 2, 6 o 7 (ej. 7777-8888).';
+          errTel.style.display = 'block';
+          return false;
+        }
+        telInput.classList.remove('is-invalid');
+        telInput.classList.add('is-valid');
+        errTel.style.display = 'none';
+        return true;
+      }
+
+      correoInput.addEventListener('input', () => {
+        correoInput.value = correoInput.value.replace(/\s+/g, '');
+        if (correoInput.classList.contains('is-invalid') || correoInput.value.includes('@')) {
+          validarCorreo(false);
+        }
+      });
+      correoInput.addEventListener('blur', () => validarCorreo(false));
+
+      telInput.addEventListener('input', () => {
+        const digits = telInput.value.replace(/\D/g, '').slice(0, 8);
+        telInput.value = digits.length > 4 ? `${digits.slice(0, 4)}-${digits.slice(4)}` : digits;
+        if (telInput.classList.contains('is-invalid') || digits.length === 8 || (digits.length > 0 && !/^[267]/.test(digits))) {
+          validarTelefono(false);
+        } else if (digits.length === 0) {
+          telInput.classList.remove('is-valid', 'is-invalid');
+          errTel.style.display = 'none';
+        }
+      });
+      telInput.addEventListener('blur', () => validarTelefono(false));
+
+      // Paso 1: Enviar código OTP
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        feedback.style.display = 'none';
+
+        const nombreUsuario = document.getElementById('reg-nombre').value.trim();
+        const idUsuario = document.getElementById('reg-usuario').value.trim();
+        const emailUsuario = correoInput.value.trim();
+        const telefonoUsuario = telInput.value.trim();
+        const password = document.getElementById('reg-password').value;
+
+        const correoOk = validarCorreo(true);
+        const telOk = validarTelefono(true);
+
+        if (!correoOk || !telOk) {
+          if (!correoOk) correoInput.focus();
+          else telInput.focus();
+          return;
+        }
+
+        if (idUsuario.length < 3) {
+          feedback.className = 'auth-feedback auth-feedback--error';
+          feedback.textContent = 'El usuario debe tener al menos 3 caracteres.';
+          feedback.style.display = 'block';
+          return;
+        }
+
+        if (password.length < 6) {
+          feedback.className = 'auth-feedback auth-feedback--error';
+          feedback.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+          feedback.style.display = 'block';
+          return;
+        }
+
+        formDataPendiente = {
+          nombreUsuario,
+          idUsuario,
+          emailUsuario,
+          telefonoUsuario,
+          password
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Enviando código OTP… <span style="display:inline-block;animation:spin 1s linear infinite">⏳</span>';
+
+        try {
+          const res = await fetch(`${window.API_URL}/api/verificacion/enviar-codigo`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailUsuario })
+          });
+
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            feedback.className = 'auth-feedback auth-feedback--error';
+            feedback.textContent = data.mensaje || 'Error al enviar código de verificación.';
+            feedback.style.display = 'block';
+            return;
+          }
+
+          // Abrir modal de verificación
+          document.getElementById('otp-target-email').textContent = emailUsuario;
+          otpError.style.display = 'none';
+          otpInput.value = '';
+          otpModal.style.display = 'flex';
+          startResendCountdown();
+          setTimeout(() => otpInput.focus(), 150);
+
+        } catch (err) {
+          console.error(err);
+          feedback.className = 'auth-feedback auth-feedback--error';
+          feedback.textContent = 'Error de conexión con el servidor.';
+          feedback.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Continuar y Verificar Correo ➔';
+        }
+      };
+
+      // Paso 2: Verificar código y registrar usuario
+      btnVerifyOtp.onclick = async () => {
+        const codigo = otpInput.value.trim();
+        if (codigo.length < 6) {
+          otpError.textContent = 'Ingresa el código completo de 6 dígitos.';
+          otpError.style.display = 'block';
+          triggerShake();
+          otpInput.focus();
+          return;
+        }
+
+        btnVerifyOtp.disabled = true;
+        btnVerifyOtp.textContent = 'Verificando…';
+        otpError.style.display = 'none';
+
+        try {
+          // 1. Validar código en API
+          const verifyRes = await fetch(`${window.API_URL}/api/verificacion/verificar-codigo`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formDataPendiente.emailUsuario, codigo })
+          });
+
+          if (!verifyRes.ok) {
+            const vData = await verifyRes.json().catch(() => ({}));
+            otpError.textContent = vData.mensaje || 'Código incorrecto o expirado.';
+            otpError.style.display = 'block';
+            triggerShake();
+            btnVerifyOtp.disabled = false;
+            btnVerifyOtp.textContent = 'Confirmar Código';
+            otpInput.select();
+            return;
+          }
+
+          // 2. Registrar en la base de datos MySQL
+          const { comprobante } = await verifyRes.json();
+          const regRes = await fetch(`${window.API_URL}/api/usuarios/registro`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...formDataPendiente, comprobante })
+          });
+
+          const regData = await regRes.json().catch(() => ({}));
+
+          if (!regRes.ok) {
+            otpError.textContent = regData.message || 'Error al completar el registro.';
+            otpError.style.display = 'block';
+            triggerShake();
+            btnVerifyOtp.disabled = false;
+            btnVerifyOtp.textContent = 'Confirmar Código';
+            return;
+          }
+
+          closeModal();
+          window.showToast('¡Cuenta creada y verificada exitosamente! 🎉', 'success');
+
+        } catch (err) {
+          console.error(err);
+          otpError.textContent = 'Error al verificar. Revisa tu conexión a internet.';
+          otpError.style.display = 'block';
+          triggerShake();
+        } finally {
+          btnVerifyOtp.disabled = false;
+          btnVerifyOtp.textContent = 'Confirmar Código';
+        }
+      };
+
+      // Reenviar código
+      btnResendOtp.onclick = async () => {
+        if (!formDataPendiente || btnResendOtp.disabled) return;
+        btnResendOtp.textContent = 'Enviando nuevo código…';
+        btnResendOtp.disabled = true;
+
+        try {
+          const res = await fetch(`${window.API_URL}/api/verificacion/enviar-codigo`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formDataPendiente.emailUsuario })
+          });
+
+          if (res.ok) {
+            window.showToast('Nuevo código enviado a tu correo.', 'info');
+            startResendCountdown();
+            otpInput.value = '';
+            otpInput.focus();
+          } else {
+            window.showToast('No se pudo reenviar el código. Intenta de nuevo.', 'error');
+            btnResendOtp.disabled = false;
+            btnResendOtp.textContent = '🔄 Reintentar';
+          }
+        } catch {
+          window.showToast('Error de conexión al reenviar.', 'error');
+          btnResendOtp.disabled = false;
+          btnResendOtp.textContent = '🔄 Reintentar';
+        }
+      };
+    });
+  </script>
+</body>
+
+</html>

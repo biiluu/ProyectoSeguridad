@@ -1,0 +1,43 @@
+/* =====================================================================
+   MercaUca - Estilos Footer Minimalista Oscuro y Dorado
+   ===================================================================== */
+.footer-mercauca {
+  margin-top: auto;
+  background: var(--primarioOscuro);
+  color: var(--blanco);
+  padding: 2.5rem 1.25rem 2rem;
+  border-top: 1px solid rgba(197, 164, 109, 0.2);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.footer-brand {
+  font-family: var(--fuentePrincipal);
+  color: var(--secundario);
+  font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-divider {
+  height: 1px;
+  width: min(520px, 90%);
+  background: linear-gradient(to right, transparent, rgba(197, 164, 109, 0.45), transparent);
+  margin: 0.25rem auto;
+}
+
+.footer-copy {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+}

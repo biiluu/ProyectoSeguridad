@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MercaUca - Tu Mercado Universitario</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/topbar.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/slider.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header id="topbar" role="banner">
+    <div class="topbar__wrap">
+      <a href="index.html" class="topbar__brand" aria-label="Inicio MERCAUCA">
+        <span>🛍️</span> MERCAUCA
+      </a>
+
+      <!-- Buscador en tiempo real -->
+      <div class="topbar__search" role="search">
+        <span class="topbar__search-icon">🔍</span>
+        <input
+          type="search"
+          id="search-input"
+          class="topbar__search-input"
+          placeholder="Buscar relojes, calculadoras, electrónica en MercaUca..."
+          autocomplete="off"
+        >
+        <div id="search-popup" class="topbar__search-popup">
+          <div id="search-status" class="topbar__search-status">Buscando…</div>
+          <ul id="search-list" class="topbar__search-list"></ul>
+        </div>
+      </div>
+
+      <!-- Acciones de Cuenta -->
+      <div class="topbar__actions">
+        <!-- Botón para abrir el carrito -->
+        <button type="button" class="icon-btn" aria-label="Abrir carrito" onclick="cart.open()"> 🛒
+          <span id="cart-badge" class="badge">0</span>
+        </button>
+        <div class="action-with-label" onclick="document.getElementById('topbar-user-btn').click()">
+          <button id="topbar-user-btn" class="icon-btn" aria-label="Cuenta" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" width="21" height="21">
+              <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/>
+            </svg>
+          </button>
+          <span id="topbar-user-label" class="icon-label">
+            <span class="user-pill__meta">Bienvenido</span>
+            <span class="user-pill__name-row">
+              <span class="user-pill__name">Crear cuenta</span>
+              <span class="user-pill__chevron">→</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVEGACIÓN SECUNDARIA ================= -->
+  <nav class="navegacion" aria-label="Navegación principal">
+    <a href="index.html" class="navegacion__enlace navegacion__enlace--activo">
+      <span>✨</span> Novedades
+    </a>
+    <a href="vender.html" class="navegacion__enlace">
+      <span>🏷️</span> Vender Producto
+    </a>
+    <a href="mis-productos.html" class="navegacion__enlace">
+      <span>📦</span> Mis Productos
+    </a>
+    <a href="registro.html" class="navegacion__enlace">
+      <span>📝</span> Registrarse
+    </a>
+  </nav>
+
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main class="contenedor">
+
+    <!-- SLIDER DESTACADOS -->
+    <section id="destacados">
+      <div class="slider">
+        <div class="track" aria-live="polite">
+          <div class="slide bg-verde">
+            <div class="slide__left">
+              <span class="slide__tag">🔥 Comunidad UCA</span>
+              <h2 class="slide__title">Compra y vende artículos</h2>
+              <p class="slide__text">Desde la comodidad del campus o de tu casa con entregas rápidas y seguras.</p>
+              <a href="#catalogo" class="slide__cta">Explorar catálogo ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Reloj Bulova Classic" class="slide__img" />
+            </div>
+          </div>
+
+          <div class="slide bg-vino">
+            <div class="slide__left">
+              <span class="slide__tag">💎 Estilo &amp; Accesorios</span>
+              <h2 class="slide__title">Lujo que habla por ti</h2>
+              <p class="slide__text">Joyería, relojes y accesorios únicos seleccionados para toda ocasión.</p>
+              <a href="#catalogo" class="slide__cta">Ver destacados ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Joyería y accesorios" class="slide__img" />
+            </div>
+          </div>
+
+          <div class="slide bg-azul">
+            <div class="slide__left">
+              <span class="slide__tag">⚡ Ofertas Estudiantes</span>
+              <h2 class="slide__title">Ofertas de temporada</h2>
+              <p class="slide__text">Precios rebajados y promociones exclusivas entre estudiantes.</p>
+              <a href="#catalogo" class="slide__cta">Ver productos ↓</a>
+            </div>
+            <div class="slide__right">
+              <img src="assets/BULOVAWATCH.jpg" alt="Ofertas de temporada" class="slide__img" />
+            </div>
+          </div>
+        </div>
+
+        <div class="nav" aria-label="Controles del carrusel">
+          <button class="prev" type="button" aria-label="Anterior">❮</button>
+          <button class="next" type="button" aria-label="Siguiente">❯</button>
+        </div>
+
+        <div class="dots" role="tablist" aria-label="Paginación del carrusel"></div>
+      </div>
+    </section>
+
+    <!-- CATÁLOGO PÚBLICO Y NOVEDADES -->
+    <section id="catalogo">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Novedades y Catálogo Público</h1>
+          <p class="section-subtitle">Explora los artículos disponibles en el mercado universitario</p>
+        </div>
+        <div id="catalog-filters" class="catalog-filters" aria-label="Filtrar por categoría">
+          <button type="button" class="catalog-filter-pill is-active" data-categoria="">Todos</button>
+        </div>
+      </div>
+
+      <!-- Skeleton Loader mientras carga -->
+      <div id="grid-loading" class="productos-grid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+      </div>
+
+      <div id="productos-grid" class="productos-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ================= DRAWER DEL CARRITO ================= -->
+  <div id="cart-backdrop" class="cart-backdrop" onclick="cart.close()">
+    <div class="cart-drawer" onclick="event.stopPropagation()">
+      <div class="cart-header">
+        <div class="cart-header__brand">
+          <div class="cart-header__icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="cart-title">Mi Carrito</h2>
+            <div id="cart-header-count" class="cart-header__sub">Sin artículos seleccionados</div>
+          </div>
+        </div>
+        <button class="cart-close-btn" onclick="cart.close()" aria-label="Cerrar carrito">✕</button>
+      </div>
+
+      <div class="cart-body">
+        <div id="cart-empty-notice" class="cart-empty">
+          <div class="cart-empty-badge">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <div class="cart-empty-title">Tu carrito está vacío</div>
+          <p class="cart-empty-desc">Explora nuestro catálogo y agrega tus artículos favoritos para realizar tu pedido.</p>
+          <button type="button" class="cart-empty-cta" onclick="cart.close()">Explorar productos →</button>
+        </div>
+        <div id="cart-items-container" class="cart-items"></div>
+
+        <!-- Opciones de Envío -->
+        <div class="cart-shipping-block" style="display: none;">
+          <h3 class="cart-shipping-title">Método de entrega</h3>
+
+          <label class="shipping-option selected" id="opt-shipping-store">
+            <input type="radio" name="shipping" value="store" checked onchange="cart.setShippingMode('store')" class="shipping-radio">
+            <div class="shipping-icon-box">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            <div class="shipping-info">
+              <div class="shipping-main">Retirar en campus UCA</div>
+              <div class="shipping-sub">Listo en 20 min · Punto de encuentro seguro</div>
+            </div>
+            <span class="shipping-badge">Gratis</span>
+          </label>
+
+          <label class="shipping-option" id="opt-shipping-home">
+            <input type="radio" name="shipping" value="home" onchange="cart.setShippingMode('home')" class="shipping-radio">
+            <div class="shipping-icon-box">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+            <div class="shipping-info">
+              <div class="shipping-main">Envío a domicilio</div>
+              <div class="shipping-sub">Entrega de 2 a 4 días hábiles</div>
+            </div>
+            <span class="shipping-badge shipping-badge--paid">$9.90</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Resumen y Checkout -->
+      <div class="cart-footer">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío estimado</span>
+          <span id="cart-shipping">Gratis</span>
+        </div>
+        <div class="summary-row summary-row-total">
+          <span>Total a pagar</span>
+          <span id="cart-total" class="summary-total-amount">$0.00</span>
+        </div>
+        <button id="cart-checkout-btn" class="checkout-btn" onclick="cart.promptCheckout()">
+          <span>Finalizar pedido</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer-mercauca">
+    <div class="footer-inner">
+      <h2 class="footer-brand"><span>🛍️</span> MERCAUCA</h2>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© 2026 MercaUca — Todos los derechos reservados. Proyecto SED.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
