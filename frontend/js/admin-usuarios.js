@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   panel.style.display = 'block';
+  const nameEl = document.getElementById('sidebar-admin-name');
+  const avatarEl = document.getElementById('sidebar-admin-avatar');
+  if (nameEl) nameEl.textContent = user.nombreUsuario || user.idUsuario;
+  if (avatarEl) avatarEl.textContent = (user.nombreUsuario || user.idUsuario || 'A').charAt(0).toUpperCase();
   await cargarRoles();
   await cargarUsuarios();
   inicializarEventos();

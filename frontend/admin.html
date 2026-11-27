@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Principal - MercaUca Admin</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__brand">
+      <a href="admin.html" class="admin-sidebar__logo"><span>MERCAUCA</span></a>
+    </div>
+    <nav class="admin-sidebar__nav">
+      <a href="admin.html" class="admin-nav-item active"><span class="admin-nav-item__icon">📊</span><span>Dashboard</span></a>
+      <a href="admin-usuarios.html" class="admin-nav-item"><span class="admin-nav-item__icon">👥</span><span>Usuarios y Roles</span></a>
+      <a href="admin-productos.html" class="admin-nav-item"><span class="admin-nav-item__icon">📦</span><span>Catálogo &amp; Stock</span></a>
+      <a href="admin-ordenes.html" class="admin-nav-item"><span class="admin-nav-item__icon">🧾</span><span>Ventas y Órdenes</span></a>
+    </nav>
+    <div class="admin-sidebar__footer">
+      <div class="admin-user-pill">
+        <div id="sidebar-admin-avatar" class="admin-user-avatar">A</div>
+        <div class="admin-user-details">
+          <strong id="sidebar-admin-name">Administrador</strong>
+          <span id="sidebar-admin-role">ADMINISTRADOR</span>
+        </div>
+      </div>
+      <a href="index.html" class="btn-topbar" style="justify-content: center; background: #27272A; color: #FFFFFF; border: none;"><span>🏪</span> Ir a Tienda</a>
+      <button type="button" onclick="window.auth.logout()" class="btn-topbar btn-topbar--danger" style="justify-content: center;"><span>🚪</span> Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <div class="admin-wrapper">
+    <header class="admin-topbar">
+      <div class="admin-topbar__title">
+        <h1>Centro de Control</h1>
+        <p>Métricas de negocio, ventas en tiempo real y accesos rápidos</p>
+      </div>
+      <div class="admin-topbar__actions">
+        <button type="button" class="btn-topbar" onclick="adminDashboard.cargarDashboard()"><span>🔄</span> Actualizar Datos</button>
+      </div>
+    </header>
+
+    <main class="admin-page-content">
+      <div id="no-login-view" style="display:none;" class="admin-aviso">
+        Debes iniciar sesión para ver esta sección. <a href="login.html?redirect=admin.html&motivo=no_autenticado">Iniciar sesión</a>
+      </div>
+      <div id="no-admin-view" style="display:none;" class="admin-aviso">
+        Acceso denegado: esta sección es solo para administradores.
+      </div>
+
+      <div id="admin-dashboard-panel" style="display:none;">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--gold">👥</div>
+            <div class="kpi-info">
+              <span class="kpi-label">Usuarios Registrados</span>
+              <span id="kpi-total-usuarios" class="kpi-value">0</span>
+              <span id="kpi-sub-usuarios" class="kpi-sub">Cargando desglose...</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--blue">📦</div>
+            <div class="kpi-info">
+              <span class="kpi-label">Catálogo de Productos</span>
+              <span id="kpi-total-productos" class="kpi-value">0</span>
+              <span id="kpi-sub-productos" class="kpi-sub">Cargando stock...</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--green">💵</div>
+            <div class="kpi-info">
+              <span class="kpi-label">Ventas Totales</span>
+              <span id="kpi-total-ventas" class="kpi-value">$0.00</span>
+              <span class="kpi-sub">Ingresos brutos acumulados</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--purple">🧾</div>
+            <div class="kpi-info">
+              <span class="kpi-label">Órdenes Realizadas</span>
+              <span id="kpi-total-ordenes" class="kpi-value">0</span>
+              <span id="kpi-sub-ordenes" class="kpi-sub">Cargando compras...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar-box" style="margin-bottom: 2rem;">
+          <div>
+            <strong style="font-size: 1.1rem; color: var(--admin-text-dark);">Módulos de Gestión Rápida</strong>
+            <p style="font-size: 0.85rem; color: var(--admin-text-muted); margin: 2px 0 0;">Accede directamente a las pantallas especializadas del sistema</p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="admin-usuarios.html" class="btn-primary-action"><span>👥</span> Gestionar Usuarios</a>
+            <a href="admin-productos.html" class="btn-primary-action"><span>📦</span> Administrar Catálogo</a>
+            <a href="admin-ordenes.html" class="btn-primary-action"><span>🧾</span> Ver Ventas y Pedidos</a>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div style="padding: 1.25rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2 style="font-family: var(--fuentePrincipal); font-size: 1.4rem; margin: 0; color: var(--admin-text-dark);">Últimas Ventas Registradas</h2>
+              <p style="font-size: 0.82rem; color: var(--admin-text-muted); margin: 0;">Transacciones más recientes en la plataforma</p>
+            </div>
+            <a href="admin-ordenes.html" class="btn-topbar">Ver todas las órdenes →</a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Orden</th>
+                  <th>Cliente Comprador</th>
+                  <th>Estado</th>
+                  <th>Total Facturado</th>
+                  <th>Fecha de Compra</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-recientes-body">
+                <tr><td colspan="5" style="text-align:center; padding: 2rem;">Cargando actividad reciente…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
